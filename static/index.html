@@ -368,6 +368,17 @@ nav button[aria-selected=true]::after{content:"";position:absolute;left:50%;bott
 .aviso .af{display:inline-block;font-weight:700;font-size:.9rem;padding:3px 10px;border-radius:99px;background:var(--sf);border:1px solid var(--line);margin:2px 0 10px}
 .aviso .ab{display:flex;flex-wrap:wrap;gap:8px}.aviso .ab button{width:auto;flex:1 1 180px;margin-top:4px}
 section>.card.aviso>h2::before{content:none;counter-increment:none}
+/* mapa realista y capas */
+#mapWind{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.chipb{width:auto;margin:0;padding:0 12px;min-height:36px;font-size:.85rem;font-weight:700;background:var(--sf);color:var(--ink);border:1px solid var(--line);border-radius:var(--r1,6px)}
+.chipb[aria-pressed=true]{background:var(--ink);color:var(--sf);border-color:var(--ink)}
+.mleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem;color:var(--mute);margin:2px 0 6px}.mleg:empty{display:none}
+.mleg i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.mphotos{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;scrollbar-width:thin}
+.mphotos button{flex:0 0 72px;width:72px;height:72px;margin:0;padding:0;border-radius:6px;overflow:hidden;background:#000}
+.mphotos img{width:100%;height:100%;object-fit:cover;display:block}
+#mInfo{margin-top:10px}
+#map.str .lab{fill:#0f2b4c;stroke:#fff}#map.str .lab2{fill:#33415c;paint-order:stroke;stroke:#fff;stroke-width:3px}
 </style>
 </head>
 <body class="simple">
@@ -414,14 +425,15 @@ section>.card.aviso>h2::before{content:none;counter-increment:none}
  <div class="card" id="mMapa"><h2>Mapa de dispersión</h2>
   <p class="explain s">Las rayitas que se mueven son el viento. Las manchas de color muestran hacia dónde podrían viajar las partículas. Arrastra para moverte y toca el colegio para acercarte.</p>
   <p class="explain x">Elipses orientadas según el viento a 10 m: longitud ∝ velocidad, ancho según el nivel. Heurística exploratoria sin calibrar ni validar con deposición posterior; no rastrea partículas.</p>
-  <div class="mapw"><svg id="map" viewBox="0 0 360 440" role="img" aria-label="Mapa de la Región de Atacama con puntos de muestreo, viento y zonas estimadas"></svg>
+  <div class="mapw"><svg id="map" viewBox="0 0 360 440" role="img" aria-label="Mapa de la Región de Atacama con puntos de muestreo, viento y zonas estimadas"></svg><canvas id="mapWind" aria-hidden="true"></canvas>
    <div class="mctl"><button id="zIn" aria-label="Acercar">+</button><button id="zOut" aria-label="Alejar">−</button><button id="zReset" aria-label="Restablecer mapa" title="Restablecer mapa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div><div class="mscale" id="msc"></div></div>
-  <div class="mapbar"><div class="seg" id="base"><button data-v="dib" aria-pressed="true">Dibujado</button><button data-v="sat" id="bSat" hidden aria-pressed="false">Satélite</button></div><div class="seg"><button id="zReg">Región</button><button id="zCop">Copiapó</button><button id="zCol">Colegio</button></div>
+  <div class="mapbar"><div class="seg" id="base"><button data-v="str" id="bStr" hidden aria-pressed="false">Calles</button><button data-v="sat" id="bSat" hidden aria-pressed="false">Satélite</button><button data-v="dib" aria-pressed="true">Dibujado</button></div><div class="seg"><button id="zReg">Región</button><button id="zCop">Copiapó</button><button id="zCol">Colegio</button></div>
    <div class="seg" id="layer"><button data-v="corr" aria-pressed="true">Corrientes</button><button data-v="vec">Flechas</button><button data-v="off">Sin viento</button></div></div>
+  <div class="mapbar" id="capas" role="group"></div><div class="mleg" id="mLeg"></div><div class="res" id="mInfo" hidden aria-live="polite"></div>
   <label for="wd">Viento desde: <span id="wdv"></span></label><input id="wd" type="range" min="0" max="359">
   <label for="ws">Velocidad: <span id="wsv"></span></label><input id="ws" type="range" min="0" max="60">
   <div class="res" id="sel"></div>
-  <p class="note">Mapa esquemático dibujado para MicroAlerta: costa, ríos y rutas aproximados; plano del colegio ilustrativo.</p></div>
+  <p class="note" id="mNote">Mapa esquemático dibujado para MicroAlerta: costa, ríos y rutas aproximados; plano del colegio ilustrativo.</p></div>
  <div class="card" id="mChart"><h2 id="chTitle">Cambio entre campañas</h2>
   <label for="chPt">Punto</label><select id="chPt"></select>
   <p class="explain s" id="chSimple"></p>
@@ -837,7 +849,7 @@ function render(){applyApproved();if(READY){renderQR();renderRaman();renderMuest
  $("wx").innerHTML=wxT(WC||W);$("wx2").innerHTML=wxT(W);
  $("wd").value=W.d;$("ws").value=Math.min(60,W.w);$("wdv").textContent=`${dN(W.d)} (${W.d}°)`;$("wsv").textContent=fW(W.w);
  const p=ALL[SEL],i=lv(p.c);
- $("sel").innerHTML=`${dot(cv(L[i].c))}<b>${p.n}</b>: ${fC(p.c)} · ${L[i].s.toLowerCase()} <span class="tag">${p.real?"dato aprobado":"demo"}</span><br>`+(W.w<1?"Sin viento: las partículas se depositarían cerca del punto.":`Viento desde el ${dN(W.d)} a ${fW(W.w)}: el aire se mueve hacia el ${dN((W.d+180)%360)}.`);
+ $("sel").innerHTML=`${dot(cv(L[i].c))}<b>${p.n}</b>: ${fC(p.c)} · ${L[i].s.toLowerCase()} <span class="tag">${p.real?"dato aprobado":"demo"}</span><br>`+(W.w<1?"Sin viento: las partículas se depositarían cerca del punto.":`Viento desde el ${dN(W.d)} a ${fW(W.w)}: el aire se mueve hacia el ${dN((W.d+180)%360)}.`)+(window.MA_selExtra?MA_selExtra(p):"");
  renderReports();
  document.querySelectorAll(".seg[data-k]").forEach(g=>[...g.children].forEach(b=>b.setAttribute("aria-pressed",S[g.dataset.k]==b.dataset.v)));
  [...$("mode").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.v==MODE));document.body.className=MODE;
@@ -919,20 +931,22 @@ const TILE=(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_
 const t2lon=(x,z)=>x/2**z*360-180,t2lat=(y,z)=>{const n=Math.PI-2*Math.PI*y/2**z;return 180/Math.PI*Math.atan(Math.sinh(n))};
 const lon2t=(lo,z)=>(lo+180)/360*2**z,lat2t=(la,z)=>(1-Math.log(Math.tan(la*Math.PI/180)+1/Math.cos(la*Math.PI/180))/Math.PI)/2*2**z;
 (()=>{const im=new Image();im.onload=()=>{SATOK=true;$("bSat").hidden=false};im.onerror=()=>{};im.referrerPolicy="no-referrer";im.src=TILE(10,316,583)})();
-function tiles(){const s=sc(),[la0]=IPJ([V.cx,V.cy]),z=Math.max(4,Math.min(18,Math.round(Math.log2(40075*Math.cos(la0*Math.PI/180)*s/256))));
+const TILE_ST=(z,x,y)=>`https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${z}/${y}/${x}`;
+(()=>{const im=new Image();im.onload=()=>{window.STROK=true;$("bStr").hidden=false;if(!window.MX_BT){BASE="str";[...$("base").children].forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.v=="str")));drawMap()}};im.onerror=()=>{};im.referrerPolicy="no-referrer";im.src=TILE_ST(10,316,583)})();
+function tiles(tf=TILE){const s=sc(),[la0]=IPJ([V.cx,V.cy]),z=Math.max(4,Math.min(18,Math.round(Math.log2(40075*Math.cos(la0*Math.PI/180)*s/256))));
  const [laN,loW]=IPJ(UNS([-20,-20])),[laS,loE]=IPJ(UNS([VW+20,VH+20]));let h="";
  const x0=Math.floor(lon2t(loW,z)),x1=Math.floor(lon2t(loE,z)),y0=Math.floor(lat2t(laN,z)),y1=Math.floor(lat2t(laS,z));if((x1-x0+1)*(y1-y0+1)>48)return "";
- for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){const[ax,ay]=SLL(t2lat(y,z),t2lon(x,z)),[bx,by]=SLL(t2lat(y+1,z),t2lon(x+1,z));h+=`<image href="${TILE(z,x,y)}" x="${ax.toFixed(1)}" y="${ay.toFixed(1)}" width="${(bx-ax+.6).toFixed(1)}" height="${(by-ay+.6).toFixed(1)}" preserveAspectRatio="none"/>`}return h}
+ for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){const[ax,ay]=SLL(t2lat(y,z),t2lon(x,z)),[bx,by]=SLL(t2lat(y+1,z),t2lon(x+1,z));h+=`<image href="${tf(z,x,y)}" x="${ax.toFixed(1)}" y="${ay.toFixed(1)}" width="${(bx-ax+.6).toFixed(1)}" height="${(by-ay+.6).toFixed(1)}" preserveAspectRatio="none"/>`}return h}
 // coloca los nombres de los puntos sin que se pisen (prueba derecha, izquierda, arriba, abajo)
-function placeLabels(arr){const boxes=arr.map(a=>[a.x-a.r-2,a.y-a.r-2,a.x+a.r+2,a.y+a.r+2]),hit=(b)=>boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);let out="";
+function placeLabels(arr){const boxes=[...arr.map(a=>[a.x-a.r-2,a.y-a.r-2,a.x+a.r+2,a.y+a.r+2]),...(window.MX_OCC||[])],hit=(b)=>boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);let out="";
  const order=arr.map((a,i)=>i).sort((i,j)=>(arr[j].sel?1:0)-(arr[i].sel?1:0));
  order.forEach(i=>{const a=arr[i],w=a.t.length*6.9+4,hh=15,g=a.r+5;const C=[[a.x+g,a.y+5,"start",[a.x+g,a.y-9,a.x+g+w,a.y+6]],[a.x-g,a.y+5,"end",[a.x-g-w,a.y-9,a.x-g,a.y+6]],[a.x,a.y-g-3,"middle",[a.x-w/2,a.y-g-hh-1,a.x+w/2,a.y-g]],[a.x,a.y+g+12,"middle",[a.x-w/2,a.y+g,a.x+w/2,a.y+g+hh]]];
   if(a.pref)C.unshift(C.splice(1,1)[0]);
   const ok=C.find(c=>c[3][0]>=2&&c[3][2]<=VW-2&&c[3][1]>=2&&c[3][3]<=VH-2&&!hit(c[3]))||(a.sel?C[0]:null);if(!ok)return;boxes.push(ok[3]);
   out+=`<text class="lab" x="${ok[0].toFixed(1)}" y="${ok[1].toFixed(1)}" text-anchor="${ok[2]}" pointer-events="none">${esc(T(a.t))}</text>`});return out}
 function drawMap(){
- const m=$("map");if(!m)return;const s=sc(),near=V.w<3,mid=V.w<40,to=(W.d+180)%360*Math.PI/180,ue=Math.sin(to),un=Math.cos(to),sat=BASE=="sat"&&SATOK;
- m.classList.toggle("sat",sat);
+ const m=$("map");if(!m)return;const s=sc(),near=V.w<3,mid=V.w<40,to=(W.d+180)%360*Math.PI/180,ue=Math.sin(to),un=Math.cos(to),sat=BASE=="sat"&&SATOK,str=BASE=="str"&&!!window.STROK,real=sat||str;
+ m.classList.toggle("sat",sat);m.classList.toggle("str",str);
  const ox=((-V.cx*s)%9+9)%9,oy=((-V.cy*s)%9+9)%9;
  let h=`<defs><linearGradient id="seaG" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="var(--sea2)"/><stop offset=".35" stop-color="var(--sea)"/></linearGradient>
  <linearGradient id="andG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--andes)" stop-opacity="0"/><stop offset=".25" stop-color="var(--andes)"/><stop offset="1" stop-color="var(--andes2)"/></linearGradient>
@@ -940,7 +954,7 @@ function drawMap(){
  <pattern id="grid" width="${Math.max(4,s*.25)}" height="${Math.max(4,s*.25)}" patternUnits="userSpaceOnUse" patternTransform="translate(${((-V.cx*s)%(s*.25)).toFixed(1)} ${((-V.cy*s)%(s*.25)).toFixed(1)}) rotate(12)"><path d="M0 0H40M0 0V40" stroke="var(--road)" stroke-width=".7" opacity=".55"/></pattern>
  <pattern id="roof" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="var(--roof)"/><line x1="0" y1="0" x2="5" y2="0" stroke="var(--roof2)" stroke-width="1.2"/></pattern></defs>`;
  const land=COAST.map(([a,b])=>SLL(a,b)),first=land[0],last=land[land.length-1];
- if(sat){h+=`<rect width="${VW}" height="${VH}" fill="#1b2730"/>`+tiles()}
+ if(real){h+=`<rect width="${VW}" height="${VH}" fill="${sat?"#1b2730":"#efe9dc"}"/>`+tiles(sat?TILE:TILE_ST)}
  else{h+=`<rect width="${VW}" height="${VH}" fill="var(--land)"/><rect width="${VW}" height="${VH}" fill="url(#sand)"/>`;
   // cordillera de la Costa y Andes (sombreado)
   const cc=COAST.map(([a,b])=>SLL(a,b+.18)),cc2=COAST.slice().reverse().map(([a,b])=>SLL(a,b+.42));h+=`<path d="${smooth(cc)}L${path(cc2).slice(1)}Z" fill="var(--andes)" opacity=".35"/>`;
@@ -949,37 +963,38 @@ function drawMap(){
   if(!near)RIOS.forEach(r=>h+=`<path d="${smooth(r.slice(2).map(([a,b])=>SLL(a,b)))}" fill="none" stroke="var(--valley)" stroke-width="${Math.max(3,2.2*s)}" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>`);
   h+=`<path d="${smooth([[-2000,first[1]],...land,[-2000,last[1]]])}Z" fill="url(#seaG)"/><path d="${smooth(land)}" fill="none" stroke="var(--coast)" stroke-width="1.4"/>`}
  if(!near){
-  if(!sat){h+=`<path d="${smooth(CITY.map(([a,b])=>SLL(a,b)))}Z" fill="var(--city)" opacity=".75"/>`;if(mid)h+=`<path d="${smooth(CITY.map(([a,b])=>SLL(a,b)))}Z" fill="url(#grid)"/>`;
+  if(!real){h+=`<path d="${smooth(CITY.map(([a,b])=>SLL(a,b)))}Z" fill="var(--city)" opacity=".75"/>`;if(mid)h+=`<path d="${smooth(CITY.map(([a,b])=>SLL(a,b)))}Z" fill="url(#grid)"/>`;
    RIOS.forEach(r=>h+=`<path d="${smooth(r.map(([a,b])=>SLL(a,b)))}" fill="none" stroke="var(--river)" stroke-width="${mid?2.6:1.5}" stroke-linecap="round"/>`)}
-  const r5=smooth(R5.map(([a,b])=>SLL(a,b)));h+=`<path d="${r5}" fill="none" stroke="${sat?"#000":"var(--sf)"}" stroke-width="${mid?5.5:3.6}" opacity=".7"/><path d="${r5}" fill="none" stroke="${sat?"#f0c25a":"var(--hwy)"}" stroke-width="${mid?3:1.8}"/>`;
-  if(!mid){TOWNS.forEach(([t,a,b])=>{if(REG.some(p=>p.n==t))return;const[x,y]=SLL(a,b);h+=`<circle cx="${x}" cy="${y}" r="2.5" fill="var(--ink)"/>`});
+  const r5=smooth(R5.map(([a,b])=>SLL(a,b)));if(!str)h+=`<path d="${r5}" fill="none" stroke="${sat?"#000":"var(--sf)"}" stroke-width="${mid?5.5:3.6}" opacity=".7"/><path d="${r5}" fill="none" stroke="${sat?"#f0c25a":"var(--hwy)"}" stroke-width="${mid?3:1.8}"/>`;
+  if(!mid&&!str){TOWNS.forEach(([t,a,b])=>{if(REG.some(p=>p.n==t))return;const[x,y]=SLL(a,b);h+=`<circle cx="${x}" cy="${y}" r="2.5" fill="var(--ink)"/>`});
    [["Océano Pacífico",-27.9,-71.42],["Cordillera de los Andes",-26.6,-69.25],["Ruta 5",-27.95,-70.5],["Río Copiapó",-27.72,-70.08],["Río Huasco",-28.86,-70.36],["Desierto de Atacama",-26.7,-70.15]].forEach(([t,a,b])=>{const[x,y]=SLL(a,b);h+=`<text class="lab2" x="${x}" y="${y}" text-anchor="middle">${t}</text>`})}
-  else{const[x,y]=SLL(-27.35,-70.33);h+=`<text class="lab2 big" x="${x}" y="${y-22}" text-anchor="middle">Copiapó</text>`}}
+  else if(!str){const[x,y]=SLL(-27.35,-70.33);h+=`<text class="lab2 big" x="${x}" y="${y-22}" text-anchor="middle">Copiapó</text>`}}
  else{const[sx,sy]=S2(toKm(-400,-92)),[ex]=S2(toKm(400,-92)),sw=14/1000*s;
-  if(!sat){h+=`<rect x="0" y="0" width="${VW}" height="${VH}" fill="var(--ground)" opacity=".6"/>`;
+  if(!real){h+=`<rect x="0" y="0" width="${VW}" height="${VH}" fill="var(--ground)" opacity=".6"/>`;
    const[px,py]=S2(toKm(-22,4));h+=`<rect x="${px}" y="${py}" width="${46/1000*s}" height="${26/1000*s}" rx="4" fill="var(--court)" stroke="var(--road)" stroke-dasharray="4 3"/><text class="lab2" x="${px+23/1000*s}" y="${py+13/1000*s+3}" text-anchor="middle">Patio</text>`;
    TREES.forEach(([e,n])=>{const[x,y]=S2(toKm(e,n));h+=`<circle cx="${x+2}" cy="${y+2}" r="${4/1000*s}" fill="#000" opacity=".12"/><circle cx="${x}" cy="${y}" r="${4/1000*s}" fill="var(--valley)"/>`});
    h+=`<rect x="${sx}" y="${sy-sw/2}" width="${ex-sx}" height="${sw}" fill="var(--street)"/><line x1="${sx}" y1="${sy}" x2="${ex}" y2="${sy}" stroke="var(--sf)" stroke-width="1.2" stroke-dasharray="8 7"/>`}
-  h+=CAMPUS.map(([e,n,w,hh,t])=>{const[x,y]=S2(toKm(e,n)),ww=w/1000*s,h2=hh/1000*s;return `${sat?"":`<rect x="${x+4}" y="${y+5}" width="${ww}" height="${h2}" rx="2" fill="#000" opacity=".16"/>`}<rect x="${x}" y="${y}" width="${ww}" height="${h2}" rx="2" fill="${sat?"none":"url(#roof)"}" stroke="${sat?"#fff":"var(--roof2)"}" stroke-width="${sat?1.5:1}" ${sat?'stroke-dasharray="5 4"':""}/><text class="lab2" x="${x+ww/2}" y="${y+h2-5}" text-anchor="middle">${t}</text>`}).join("");
+  h+=CAMPUS.map(([e,n,w,hh,t])=>{const[x,y]=S2(toKm(e,n)),ww=w/1000*s,h2=hh/1000*s;return `${real?"":`<rect x="${x+4}" y="${y+5}" width="${ww}" height="${h2}" rx="2" fill="#000" opacity=".16"/>`}<rect x="${x}" y="${y}" width="${ww}" height="${h2}" rx="2" fill="${real?"none":"url(#roof)"}" stroke="${sat?"#fff":str?"#0f2b4c":"var(--roof2)"}" stroke-width="${real?1.5:1}" ${real?'stroke-dasharray="5 4"':""}/><text class="lab2" x="${x+ww/2}" y="${y+h2-5}" text-anchor="middle">${t}</text>`}).join("");
   h+=`<text class="lab2" x="${VW/2}" y="${sy+sw/2+14}" text-anchor="middle">Calle</text><text class="lab2" x="10" y="${VH-34}">Techumbres del Colegio Cervantino · plano ilustrativo</text>`}
  // zonas de dispersión
  const pts=near?SEC:REG,kmLen=near?(.025+W.w*.0035):(25+W.w*3.5)*.4,kmWid=i=>near?(.006+i*.004):(6+i*4)*.35;
  if(W.w>0)pts.forEach(p=>{const i=lv(p.c),[x0,y0]=PJ(p.la,p.lo),poly=[];for(let k=0;k<40;k++){const t=k/40*2*Math.PI,a=(Math.cos(t)+1)*kmLen/2,b=Math.sin(t)*kmWid(i);poly.push(S2([x0+a*ue+b*un,y0-(a*un-b*ue)]))}
   h+=`<path d="${path(poly)}Z" fill="${cv(L[i].c)}" opacity="${.28+i*.07}" stroke="${cv(L[i].c)}" stroke-opacity=".6"/>`});
  // viento
- if(LY!="off"&&W.w>0){const cols=6,rows=7,len=12+W.w*.9,wc=sat?"#fff":"var(--ink)";for(let a=0;a<cols;a++)for(let b=0;b<rows;b++){const x=(a+.5+(b%2)*.35)*VW/cols,y=(b+.5)*VH/rows,x2=x+ue*len,y2=y-un*len;
+ if((LY=="vec"||(LY=="corr"&&(RM||!window.MW_OK)))&&W.w>0){const cols=6,rows=7,len=12+W.w*.9,wc=sat?"#fff":str?"#0f2b4c":"var(--ink)";for(let a=0;a<cols;a++)for(let b=0;b<rows;b++){const x=(a+.5+(b%2)*.35)*VW/cols,y=(b+.5)*VH/rows,x2=x+ue*len,y2=y-un*len;
   h+=`<line x1="${x}" y1="${y}" x2="${x2}" y2="${y2}" stroke="${wc}" stroke-width="1.6" opacity="${sat?.75:.45}" stroke-linecap="round" class="${LY=="corr"?"fl":""}"/>`;
   if(LY=="vec"){const g=Math.atan2(-un,ue);[2.6,-2.6].forEach(o=>h+=`<line x1="${x2}" y1="${y2}" x2="${x2+Math.cos(g+o)*6}" y2="${y2+Math.sin(g+o)*6}" stroke="${wc}" stroke-width="1.6" opacity="${sat?.75:.45}" stroke-linecap="round"/>`)}}}
+ h+=window.MA_mapLayers?MA_mapLayers({near,mid,sat,str,real}):"";
  // puntos
  const LABS=[];pts.forEach(p=>{const idx=ALL.indexOf(p),[x,y]=SLL(p.la,p.lo),r=idx==SEL?10:7.5;
   h+=`<g data-p="${idx}" style="cursor:pointer" tabindex="0" role="button" aria-label="${p.n}, ${fC(p.c)}"><circle cx="${x}" cy="${y}" r="22" fill="transparent"/><circle cx="${x}" cy="${y+1.5}" r="${r}" fill="#000" opacity=".25"/><circle cx="${x}" cy="${y}" r="${r}" fill="${cv(L[lv(p.c)].c)}" stroke="${idx==SEL?"var(--ink)":"#fff"}" stroke-width="3"/></g>`;LABS.push({x,y,t:p.n,r,sel:idx==SEL})});
- if(!near)(window.MA_SCH||[]).forEach(sc=>{const[x,y]=SLL(sc.la,sc.lo);h+=`<g><title>${esc(sc.n)}</title><rect x="${x-6}" y="${y-6}" width="12" height="12" rx="3" fill="var(--sf)" stroke="var(--tq)" stroke-width="3"/></g>`});
+ if(!near&&window.MA_LAY_RED!==false)(window.MA_SCH||[]).forEach(sc=>{const[x,y]=SLL(sc.la,sc.lo);h+=`<g data-x="sch:${esc(sc.n)}" style="cursor:pointer" tabindex="0" role="button" aria-label="${esc(sc.n)}"><circle cx="${x}" cy="${y}" r="14" fill="transparent"/><title>${esc(sc.n)}</title><rect x="${x-6}" y="${y-6}" width="12" height="12" rx="3" fill="var(--sf)" stroke="var(--tq)" stroke-width="3"/></g>`});
  if(!near){const[x,y]=SLL(COL.la,COL.lo),mx=Math.max(...SEC.map(s=>s.c));
   h+=`<g data-col="1" style="cursor:pointer" tabindex="0" role="button" aria-label="Colegio Cervantino: acercar"><circle cx="${x}" cy="${y}" r="16" fill="transparent"/><rect x="${x-8}" y="${y-8}" width="16" height="16" rx="4" fill="${cv(L[lv(mx)].c)}" stroke="var(--ink)" stroke-width="2"/></g>`;LABS.unshift({x,y,t:"Colegio Cervantino",r:9,pref:1,sel:true})}
  h+=placeLabels(LABS);
- h+=`<g transform="translate(22 26)"><circle r="13" fill="var(--sf)" stroke="var(--line)"/><path d="M0 -9 L4 3 L0 1 L-4 3Z" fill="var(--ink)"/><text y="-16" text-anchor="middle" font-size="11" font-weight="700" fill="${sat?"#fff":"var(--ink)"}">N</text></g>`;
- if(sat)h+=`<text x="${VW-6}" y="${VH-6}" text-anchor="end" font-size="10" fill="#fff" opacity=".9">Imágenes © Esri</text>`;
- m.innerHTML=h;
+ h+=`<g transform="translate(22 26)"><circle r="13" fill="var(--sf)" stroke="var(--line)"/><path d="M0 -9 L4 3 L0 1 L-4 3Z" fill="var(--ink)"/><text y="-16" text-anchor="middle" font-size="11" font-weight="700" fill="${sat?"#fff":str?"#0f2b4c":"var(--ink)"}">N</text></g>`;
+ if(real)h+=`<text x="${VW-6}" y="${VH-6}" text-anchor="end" font-size="10" fill="${sat?"#fff":"#333"}" opacity=".9" paint-order="stroke" stroke="${sat?"none":"rgba(255,255,255,.85)"}" stroke-width="3">${sat?"Imágenes © Esri":"© Esri, OpenStreetMap"}</text>`;
+ m.innerHTML=h;window.MA_mapDone&&MA_mapDone();
  const km=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100].find(k=>k*s>=50)||100;$("msc").innerHTML=`<span style="display:inline-block;width:${km*s}px;border-bottom:2px solid var(--ink);margin-right:4px"></span>${km<1?Math.round(km*1000)+" m":km+" km"}`;
 }
 function fly(cx,cy,w){if(ANIM)cancelAnimationFrame(ANIM);const a={...V},t0=performance.now(),D=RM?1:750;
@@ -994,12 +1009,12 @@ $("zIn").onclick=()=>zoomAt(.5);$("zOut").onclick=()=>zoomAt(2);
  m.addEventListener("pointermove",e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,loc(e));
   if(pinch&&P.size==2){const f=pinch.d/Math.max(10,dist()),[px,py]=mid();zoomAt(Math.min(500,Math.max(.15,pinch.w*f))/V.w,px,py);return}
   if(!d)return;const p=loc(e),dx=p[0]-d.p[0],dy=p[1]-d.p[1];moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));if(moved>4){V.cx=d.c[0]-dx/sc();V.cy=d.c[1]-dy/sc();drawMap()}});
- const up=e=>{P.delete(e.pointerId);if(P.size<2)pinch=null;if(!d)return;m.classList.remove("drag");const was=moved;d=null;if(was<=4){const el=document.elementFromPoint(e.clientX,e.clientY),g=el&&el.closest("g[data-p],g[data-col]");if(g)pick(g)}};
+ const up=e=>{P.delete(e.pointerId);if(P.size<2)pinch=null;if(!d)return;m.classList.remove("drag");const was=moved;d=null;if(was<=4){const el=document.elementFromPoint(e.clientX,e.clientY),g=el&&el.closest("g[data-p],g[data-col],g[data-x]");if(g)pick(g)}};
  m.addEventListener("pointerup",up);m.addEventListener("pointercancel",e=>{P.delete(e.pointerId);pinch=null;d=null;m.classList.remove("drag")});
  m.addEventListener("wheel",e=>{e.preventDefault();const p=loc(e);zoomAt(e.deltaY>0?1.25:.8,p[0],p[1])},{passive:false});
- m.addEventListener("keydown",e=>{if(e.key=="Enter"||e.key==" "){const g=e.target.closest("g[data-p],g[data-col]");if(g){e.preventDefault();pick(g)}}})})();
-function pick(g){if(g.dataset.col){fly(colKm[0],colKm[1],.24);return}SEL=+g.dataset.p;render()}
-$("base").onclick=e=>{const b=e.target.closest("button[data-v]");if(!b)return;BASE=b.dataset.v;[...$("base").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.v==BASE));drawMap()};
+ m.addEventListener("keydown",e=>{if(e.key=="Enter"||e.key==" "){const g=e.target.closest("g[data-p],g[data-col],g[data-x]");if(g){e.preventDefault();pick(g)}}})})();
+function pick(g){if(g.dataset.x){window.MA_mapPick&&MA_mapPick(g.dataset.x);return}if(g.dataset.col){fly(colKm[0],colKm[1],.24);return}SEL=+g.dataset.p;render()}
+$("base").onclick=e=>{const b=e.target.closest("button[data-v]");if(!b)return;window.MX_BT=1;BASE=b.dataset.v;[...$("base").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.v==BASE));drawMap()};
 $("zReset").onclick=()=>{LY="corr";[...$("layer").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.v=="corr"));Object.assign(W,WLIVE||{d:250,w:16,g:24});SEL=ALL.indexOf(SEC.find(p=>p.n=="Baño"));render();const d=VDEF();fly(d.cx,d.cy,d.w)};
 $("layer").onclick=e=>{const v=e.target.dataset.v;if(!v)return;LY=v;[...$("layer").children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.v==v));drawMap()};
 $("wd").oninput=e=>{W.d=+e.target.value;render()};$("ws").oninput=e=>{W.w=+e.target.value;render()};
@@ -1672,6 +1687,84 @@ window.MA_photos=()=>{const mic=GAL.filter(x=>["sin","lugol","azul"].includes(x.
 $("iStripGo").onclick=()=>{go("proyecto");setTimeout(()=>$("pGaleria").scrollIntoView({behavior:"smooth",block:"start"}),60)};
 MA_photos();
 addSpeakers();
+
+// ---------- Mapa realista: capas, viento en vivo y fotos por sector ----------
+const MX={lay:{aire:true,fuentes:false,red:true},aq:null,wind:null,t:"",touched:false,ph:[]};
+const FUENTES=[
+ {mp:1,n:"Copiapó urbano",ne:"Urban Copiapó",la:-27.37,lo:-70.325,t:"Tránsito (desgaste de neumáticos y frenos), ropa sintética y basura plástica: fuentes típicas de microplásticos en las ciudades.",te:"Traffic (tyre and brake wear), synthetic clothing and plastic litter: typical urban microplastic sources."},
+ {mp:1,n:"Ruta 5",ne:"Route 5",la:-27.29,lo:-70.41,t:"Desgaste de neumáticos y basura en las bermas, levantados por el viento.",te:"Tyre wear and roadside litter, lifted by the wind."},
+ {mp:1,n:"Valle de Copiapó: agricultura",ne:"Copiapó valley: farming",la:-27.6,lo:-70.23,t:"Plásticos agrícolas (mallas, cubiertas y mulch) que el sol fuerte vuelve frágiles y el viento rompe en trocitos.",te:"Farm plastics (nets, covers and mulch) that strong sun makes brittle and the wind breaks into bits."},
+ {mp:0,n:"Faenas mineras de Tierra Amarilla",ne:"Tierra Amarilla mining",la:-27.51,lo:-70.29,t:"Polvo mineral de rajos, botaderos y tránsito de camiones. Es material particulado, no microplástico.",te:"Mineral dust from pits, waste dumps and truck traffic. It is particulate matter, not microplastic."},
+ {mp:0,n:"Fundición de Paipote",ne:"Paipote smelter",la:-27.43,lo:-70.26,t:"Emisiones industriales y material particulado.",te:"Industrial emissions and particulate matter."},
+ {mp:0,n:"Huasco: zona industrial",ne:"Huasco industrial area",la:-28.47,lo:-71.23,t:"Termoeléctrica y planta de pellets: material particulado, no microplástico.",te:"Power plant and pellet plant: particulate matter, not microplastic."}];
+const SKEY={"Entrada":"entrada","Comedor":"comedor","Casino":"casino","Calle":"calle","Baño":"bano","Laboratorio":"laba"};
+const aqOf=a=>AQ[Math.max(aqLv(a.p25,"p25"),aqLv(a.p10,"p10"))];
+const dirTxt=d=>LANG=="en"?(DIRS[dN(d)]||dN(d)):dN(d);
+window.MA_LAY_RED=MX.lay.red;
+window.MA_mapLayers=o=>{let h="";window.MX_OCC=[];if(o.near)return h;const out=(x,y)=>x<-30||x>VW+30||y<-40||y>VH+30;
+ if(MX.lay.fuentes)FUENTES.forEach((f,i)=>{const[x,y]=SLL(f.la,f.lo);if(out(x,y))return;const c=f.mp?"var(--ac)":"#8a6d3b";
+  h+=`<g data-x="src:${i}" style="cursor:pointer" tabindex="0" role="button" aria-label="${esc(B(f.n,f.ne))}"><circle cx="${x}" cy="${y}" r="16" fill="transparent"/><rect x="${x-6}" y="${y-6}" width="12" height="12" transform="rotate(45 ${x} ${y})" fill="${c}" stroke="#fff" stroke-width="2"/></g>`});
+ if(MX.lay.aire&&MX.aq){const occ=REG.map(p=>{const[x,y]=SLL(p.la,p.lo);return[x-10,y-10,x+10,y+10]});{const[x,y]=SLL(COL.la,COL.lo);occ.push([x-10,y-10,x+10,y+10])}
+  const hit=b=>occ.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);
+  MX.aq.forEach((a,i)=>{const[x,y]=SLL(a.la,a.lo);if(out(x,y))return;const L0=aqOf(a),tc=L0==AQ[1]?"#2b2100":"#fff";
+   let bx=x,by=y-22;for(const[dx,dy]of[[0,0],[0,-20],[34,-6],[-34,-6],[34,-26],[-34,-26],[0,-40]]){const b=[x+dx-16,y-31+dy,x+dx+16,y-12+dy];if(!hit(b)){bx=x+dx;by=y-22+dy;break}}
+   occ.push([bx-16,by-9,bx+16,by+10]);window.MX_OCC.push([bx-16,by-9,bx+16,by+10]);
+   h+=`<g data-x="aq:${i}" style="cursor:pointer" tabindex="0" role="button" aria-label="${esc(B(`Calidad del aire en ${a.n}: ${L0.n}`,`Air quality in ${a.n}: ${T(L0.n)}`))}"><line x1="${x}" y1="${y}" x2="${bx}" y2="${by+9}" stroke="#0f2b4c" stroke-width="1.5" opacity=".7"/><circle cx="${x}" cy="${y}" r="2.5" fill="#0f2b4c"/><rect x="${bx-15}" y="${by-9}" width="30" height="19" rx="5" fill="${cv(L0.c)}" stroke="#fff" stroke-width="1.5"/><text x="${bx}" y="${by+4.5}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${tc}" pointer-events="none">${Math.round(a.p25)}</text></g>`})}
+ return h};
+window.MA_mapPick=x=>{const k=x.indexOf(":"),t=x.slice(0,k),v=x.slice(k+1),box=$("mInfo");let h="";
+ if(t=="aq"){const a=MX.aq&&MX.aq[+v];if(!a)return;const L0=aqOf(a),w=MX.wind&&MX.wind[COMS.findIndex(c=>c[0]==a.n)];
+  h=`<b>${dot(cv(L0.c))}${B("Calidad del aire","Air quality")} · ${esc(a.n)}: ${esc(T(L0.n))}</b><br>${B("MP2,5","PM2.5")} ${Math.round(a.p25)} µg/m³ · ${B("MP10","PM10")} ${Math.round(a.p10)} µg/m³${w?` · ${B("viento","wind")} ${fW(w.s)} ${B("desde el","from the")} ${dirTxt(w.d)}`:""}<br><span class="mute">${esc(T(L0.r[0]))}</span><p class="note">${B(`Promedio de 24 h del modelo CAMS vía Open-Meteo (actualizado ${MX.t}). No es una estación de medición.`,`24-h mean from the CAMS model via Open-Meteo (updated ${MX.t}). Not a monitoring station.`)}</p>`}
+ else if(t=="src"){const f=FUENTES[+v];if(!f)return;
+  h=`<b><span class="dot" style="border-radius:2px;transform:rotate(45deg);background:${f.mp?"var(--ac)":"#8a6d3b"}"></span>${esc(B(f.n,f.ne))}</b> <span class="tag">${f.mp?B("posible fuente de microplásticos","possible microplastic source"):B("polvo y material particulado","dust and particulates")}</span><br>${esc(B(f.t,f.te))}<p class="note">${B("Ubicación aproximada y solo referencial: no hemos medido que las partículas de nuestras placas vengan de aquí.","Approximate, reference-only location: we have not measured that the particles in our dishes come from here.")}</p>`}
+ else if(t=="sch"){h=`<b><span class="sq" style="display:inline-block;margin-right:6px"></span>${esc(v)}</b><br>${B("Colegio de la red MicroAlerta: usa el mismo protocolo de captación.","MicroAlerta network school: it uses the same sampling protocol.")}`}
+ box.innerHTML=h;box.hidden=!h};
+window.MA_selExtra=p=>{const k=SKEY[p.n];if(!k||p.g!="col")return "";const ph=GAL.filter(x=>x.sector==k&&x.cat!="muestreo"&&x.cat!="equipo");MX.ph=ph;
+ if(!ph.length)return `<p class="mute" style="margin:8px 0 0">${B("Aún no hay fotos del microscopio de este sector.","No microscope photos from this site yet.")}</p>`;
+ return `<div class="mphotos" role="list">${ph.slice(0,8).map((x,i)=>`<button type="button" role="listitem" data-mp="${i}" aria-label="${esc(x.txt||B("Foto del microscopio","Microscope photo"))}"><img src="${esc(x.url||"/_blob/"+x.asset)}" alt="" loading="lazy"></button>`).join("")}</div><button type="button" class="sec" data-gsec="${k}" style="margin-top:6px">${B(`Ver las ${ph.length} fotos de este sector en la galería`,`See all ${ph.length} photos from this site in the gallery`)}</button>`};
+$("sel").addEventListener("click",e=>{const b=e.target.closest("[data-mp]");if(b){lbOpen(MX.ph.map(x=>({src:new URL(x.url||"/_blob/"+x.asset,location.href).href,cap:x.txt||""})),+b.dataset.mp);return}
+ const s=e.target.closest("[data-gsec]");if(s){GSEC=s.dataset.gsec;GCAT="todas";GN=30;renderGal();go("proyecto");setTimeout(()=>$("pGaleria").scrollIntoView({behavior:RM?"auto":"smooth",block:"start"}),60)}});
+function mxLeg(){const l=$("mLeg");if(!l)return;let h="";
+ if(MX.lay.aire)h+=MX.aq?`<span><i style="background:var(--l1);border-radius:3px"></i>${B("Etiquetas: MP2,5 promedio 24 h (µg/m³), color según la norma chilena","Tags: 24-h mean PM2.5 (µg/m³), coloured by the Chilean standard")}</span>`:`<span>${B("Calidad del aire por comuna: sin conexión a Open-Meteo en esta vista.","Air quality by district: no connection to Open-Meteo in this view.")}</span>`;
+ if(MX.lay.fuentes)h+=`<span><i style="background:var(--ac);transform:rotate(45deg)"></i>${B("Posible fuente de microplásticos","Possible microplastic source")}</span><span><i style="background:#8a6d3b;transform:rotate(45deg)"></i>${B("Polvo y material particulado","Dust and particulates")}</span>`;
+ if(MX.lay.red)h+=`<span><i style="border:3px solid var(--tq);border-radius:3px;width:6px;height:6px"></i>${B("Colegio de la red","Network school")}</span>`;
+ if(LY=="corr"&&!RM)h+=`<span>${MX.wind&&!MX.touched?B("Viento en vivo de 9 comunas (Open-Meteo)","Live wind from 9 districts (Open-Meteo)"):B("Viento según los controles de abajo","Wind from the sliders below")}</span>`;
+ l.innerHTML=h;
+ const n=$("mNote");if(n)n.textContent=(BASE=="str"&&window.STROK)||(BASE=="sat"&&SATOK)?B("Mapa base © Esri y colaboradores de OpenStreetMap. El plano del colegio es ilustrativo y las zonas de dispersión son exploratorias.","Base map © Esri and OpenStreetMap contributors. The school plan is illustrative and the dispersion zones are exploratory."):B("Mapa esquemático dibujado para MicroAlerta: costa, ríos y rutas aproximados; plano del colegio ilustrativo.","Schematic map drawn for MicroAlerta: coast, rivers and roads are approximate; the school plan is illustrative.")}
+// viento animado (partículas sobre un canvas)
+const MW={P:[]};
+const mwSeed=p=>Object.assign(p,{x:Math.random()*VW,y:Math.random()*VH,a:0,m:40+Math.random()*70});
+function mwAt(px,py){let e,n;const F=MX.wind&&!MX.touched?MX.wind:null;
+ if(F){const[xk,yk]=UNS([px,py]);let sw=0,se=0,sn=0;for(const f of F){const w=1/((f.x[0]-xk)**2+(f.x[1]-yk)**2+25),to=(f.d+180)*Math.PI/180;se+=w*Math.sin(to)*f.s;sn+=w*Math.cos(to)*f.s;sw+=w}e=se/sw;n=sn/sw}
+ else{const to=(W.d+180)*Math.PI/180;e=Math.sin(to)*W.w;n=Math.cos(to)*W.w}
+ return[e*.028,-n*.028]}
+const mwCol=()=>BASE=="sat"&&SATOK?"255,255,255":BASE=="str"&&window.STROK?"15,43,76":(()=>{const h=cs("--ink").replace("#","");return h.length==6?[0,2,4].map(i=>parseInt(h.substr(i,2),16)).join(","):"15,43,76"})();
+function mwFrame(){requestAnimationFrame(mwFrame);const c=$("mapWind");if(!c)return;const g=c.getContext("2d");
+ const on=LY=="corr"&&!RM&&$("mapa").classList.contains("on")&&!document.hidden&&(MX.wind&&!MX.touched||W.w>0);
+ if(!on){if(MW.P.length){g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,c.width,c.height);MW.P=[]}return}
+ const r=c.getBoundingClientRect();if(!r.width)return;const d=devicePixelRatio||1,cw=Math.round(r.width*d),ch=Math.round(r.height*d);
+ if(c.width!=cw||c.height!=ch){c.width=cw;c.height=ch;MW.P=[]}
+ const kx=cw/VW,ky=ch/VH;g.setTransform(1,0,0,1,0,0);
+ g.globalCompositeOperation="destination-out";g.fillStyle="rgba(0,0,0,.08)";g.fillRect(0,0,cw,ch);g.globalCompositeOperation="source-over";
+ if(!MW.P.length)MW.P=Array.from({length:260},()=>mwSeed({}));
+ g.strokeStyle=`rgba(${mwCol()},.7)`;g.lineWidth=1.3*d;g.lineCap="round";g.beginPath();
+ for(const p of MW.P){const[u,v]=mwAt(p.x,p.y),nx=p.x+u,ny=p.y+v;g.moveTo(p.x*kx,p.y*ky);g.lineTo(nx*kx,ny*ky);p.x=nx;p.y=ny;if(++p.a>p.m||nx<0||nx>VW||ny<0||ny>VH)mwSeed(p)}
+ g.stroke()}
+window.MA_mapDone=()=>{const c=$("mapWind");if(c&&MW.P.length){const g=c.getContext("2d");g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,c.width,c.height)}mxLeg()};
+async function mxLoad(){const la=COMS.map(c=>c[1]).join(","),lo=COMS.map(c=>c[2]).join(",");
+ try{const a=await(await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${la}&longitude=${lo}&hourly=pm10,pm2_5&past_days=1&forecast_days=1&timeformat=unixtime`)).json(),arr=Array.isArray(a)?a:[a];
+  const q=arr.map((d,i)=>{const t=d.hourly.time.map(x=>x*1000);return{n:COMS[i][0],la:COMS[i][1],lo:COMS[i][2],p25:avg24(t,d.hourly.pm2_5),p10:avg24(t,d.hourly.pm10)}}).filter(x=>x.p25!=null&&x.p10!=null);MX.aq=q.length?q:null}catch(e){MX.aq=null}
+ try{const w=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh`)).json(),arr=Array.isArray(w)?w:[w];
+  MX.wind=arr.map((d,i)=>({x:PJ(COMS[i][1],COMS[i][2]),s:d.current.wind_speed_10m,d:d.current.wind_direction_10m}))}catch(e){MX.wind=null}
+ MX.t=new Date().toLocaleTimeString(LOC,{hour:"2-digit",minute:"2-digit"});drawMap()}
+(()=>{const c=$("capas");if(!c)return;const CH=[["aire",B("Calidad del aire","Air quality")],["fuentes",B("Fuentes posibles","Possible sources")],["red",B("Colegios","Schools")]];
+ c.setAttribute("aria-label",B("Capas del mapa","Map layers"));
+ c.innerHTML=`<span class="mute" style="align-self:center;font-size:.85rem">${B("Capas:","Layers:")}</span>`+CH.map(([k,t])=>`<button type="button" class="chipb" data-c="${k}" aria-pressed="${MX.lay[k]}">${t}</button>`).join("");
+ c.onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;const k=b.dataset.c;MX.lay[k]=!MX.lay[k];b.setAttribute("aria-pressed",String(MX.lay[k]));window.MA_LAY_RED=MX.lay.red;if(!MX.lay[k])$("mInfo").hidden=true;drawMap()};
+ $("bStr").textContent=B("Calles","Streets");
+ ["wd","ws"].forEach(i=>$(i).addEventListener("input",()=>{MX.touched=true;mxLeg()}));
+ $("zReset").addEventListener("click",()=>{MX.touched=false;$("mInfo").hidden=true;mxLeg()});
+ const _mp=window.MA_photos;window.MA_photos=()=>{_mp&&_mp();if(READY)render()};
+ window.MW_OK=true;requestAnimationFrame(mwFrame);drawMap();mxLoad()})();
 
 </script>
 </body>

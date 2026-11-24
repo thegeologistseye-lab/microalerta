@@ -2,7 +2,7 @@
 // - Fotos, espectros, íconos y fuentes: primero la copia guardada (rápido y sin señal).
 // - La app y las listas de reportes y galería: primero la red; si no hay señal, la copia guardada.
 // - El resto de la API (iniciar sesión, enviar reportes) siempre va a la red.
-const CACHE = "microalerta-v17";
+const CACHE = "microalerta-v18";
 const SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png", "/logo-mark.png", "/logo-full.jpg"];
 const LISTAS = ["/api/gallery", "/api/reports", "/api/health", "/api/me"];
 
