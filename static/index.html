@@ -820,7 +820,7 @@ const AQ=[{n:"Bueno",c:"--l1",p25:50,p10:130,r:["Puedes realizar actividades al 
 {n:"Emergencia",c:"--l5",p25:1e9,p10:1e9,r:["Evita salir y suspende actividades al aire libre.","Ante síntomas respiratorios, consulta a un centro de salud.","Sigue las medidas que informe la autoridad."]}];
 const aqLv=(v,k)=>AQ.findIndex(a=>v<a[k]);let AQV=null;
 // ---------- Datos demo ----------
-const CAMP=["May","Jun","Ago","Sep","Nov"],COL={la:-27.38787,lo:-70.30987};
+const CAMP=["May","Jun","Ago","Sep","Nov"],COL={la:-27.38856,lo:-70.31147};
 const mk=(n,la,lo,v,g)=>({n,la,lo,v,c:v[v.length-1],g});
 const SEC=[mk("Laboratorio",COL.la+.0002,COL.lo-.0002,[.2,.35,.3,.4,.35],"col"),mk("Entrada",COL.la-.00035,COL.lo-.00035,[.6,.9,.7,1.1,.9],"col"),mk("Comedor",COL.la+.00005,COL.lo+.00022,[1.8,2.4,2.1,2.9,2.6],"col"),mk("Casino",COL.la-.00022,COL.lo+.0005,[1,1.4,1.2,1.7,1.5],"col"),mk("Baño",COL.la+.00032,COL.lo+.00045,[3.5,4.8,4.1,6.2,5.5],"col"),mk("Calle",COL.la-.00062,COL.lo+.00005,[2.2,3.1,2.6,4,3.75],"col")];
 const REG=[mk("Copiapó centro",-27.366,-70.332,[.9,1.2,1.1,1.6,1.45],"reg"),mk("Tierra Amarilla",-27.48,-70.27,[1.6,2.2,1.9,2.9,2.6],"reg"),mk("Caldera",-27.067,-70.818,[.2,.3,.25,.4,.35],"reg"),mk("Bahía Inglesa",-27.105,-70.855,[.1,.15,.12,.2,.18],"reg"),mk("Chañaral",-26.348,-70.62,[.5,.7,.6,.9,.8],"reg"),mk("Vallenar",-28.576,-70.76,[.4,.55,.5,.7,.62],"reg"),mk("Huasco",-28.466,-71.22,[.12,.18,.15,.22,.2],"reg")];
@@ -1694,9 +1694,10 @@ const FUENTES=[
  {mp:1,n:"Copiapó urbano",ne:"Urban Copiapó",la:-27.37,lo:-70.325,t:"Tránsito (desgaste de neumáticos y frenos), ropa sintética y basura plástica: fuentes típicas de microplásticos en las ciudades.",te:"Traffic (tyre and brake wear), synthetic clothing and plastic litter: typical urban microplastic sources."},
  {mp:1,n:"Ruta 5",ne:"Route 5",la:-27.29,lo:-70.41,t:"Desgaste de neumáticos y basura en las bermas, levantados por el viento.",te:"Tyre wear and roadside litter, lifted by the wind."},
  {mp:1,n:"Valle de Copiapó: agricultura",ne:"Copiapó valley: farming",la:-27.6,lo:-70.23,t:"Plásticos agrícolas (mallas, cubiertas y mulch) que el sol fuerte vuelve frágiles y el viento rompe en trocitos.",te:"Farm plastics (nets, covers and mulch) that strong sun makes brittle and the wind breaks into bits."},
+ {mp:1,n:"Valle del Huasco: agricultura",ne:"Huasco valley: farming",la:-28.5333,lo:-70.3667,t:"Plásticos agrícolas (mallas, cubiertas y mulch) que el sol fuerte vuelve frágiles y el viento rompe en trocitos.",te:"Farm plastics (nets, covers and mulch) that strong sun makes brittle and the wind breaks into bits."},
  {mp:0,n:"Faenas mineras de Tierra Amarilla",ne:"Tierra Amarilla mining",la:-27.51,lo:-70.29,t:"Polvo mineral de rajos, botaderos y tránsito de camiones. Es material particulado, no microplástico.",te:"Mineral dust from pits, waste dumps and truck traffic. It is particulate matter, not microplastic."},
- {mp:0,n:"Fundición de Paipote",ne:"Paipote smelter",la:-27.43,lo:-70.26,t:"Emisiones industriales y material particulado.",te:"Industrial emissions and particulate matter."},
- {mp:0,n:"Huasco: zona industrial",ne:"Huasco industrial area",la:-28.47,lo:-71.23,t:"Termoeléctrica y planta de pellets: material particulado, no microplástico.",te:"Power plant and pellet plant: particulate matter, not microplastic."}];
+ {mp:0,n:"Fundición de Paipote",ne:"Paipote smelter",la:-27.4141,lo:-70.276,t:"Emisiones industriales y material particulado.",te:"Industrial emissions and particulate matter."},
+ {mp:0,n:"Huasco: zona industrial",ne:"Huasco industrial area",la:-28.4651,lo:-71.2208,t:"Termoeléctrica y planta de pellets: material particulado, no microplástico.",te:"Power plant and pellet plant: particulate matter, not microplastic."}];
 const SKEY={"Entrada":"entrada","Comedor":"comedor","Casino":"casino","Calle":"calle","Baño":"bano","Laboratorio":"laba"};
 const aqOf=a=>AQ[Math.max(aqLv(a.p25,"p25"),aqLv(a.p10,"p10"))];
 const dirTxt=d=>LANG=="en"?(DIRS[dN(d)]||dN(d)):dN(d);
