@@ -359,6 +359,15 @@ nav button[aria-selected=true] svg{color:var(--ac)}
 nav button[aria-selected=true]::after{content:"";position:absolute;left:50%;bottom:3px;width:16px;height:3px;margin-left:-8px;border-radius:2px;background:var(--ac)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) nav button[aria-selected=true]{color:#fff}}
 :root[data-theme="dark"] nav button[aria-selected=true]{color:#fff}
+/* aviso de campañas en Inicio */
+.card.aviso{margin:14px 0 4px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--ac) 40%,var(--sf));border-radius:20px;background:color-mix(in srgb,var(--ac) 10%,var(--sf))}
+.card.aviso.res2{border-color:color-mix(in srgb,var(--l1) 45%,var(--sf));background:color-mix(in srgb,var(--l1) 12%,var(--sf))}
+.aviso .ak{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
+.aviso.res2 .ak{color:var(--l1)}
+.aviso h2{margin:6px 0 6px}.aviso p{margin:0 0 8px}
+.aviso .af{display:inline-block;font-weight:700;font-size:.9rem;padding:3px 10px;border-radius:99px;background:var(--sf);border:1px solid var(--line);margin:2px 0 10px}
+.aviso .ab{display:flex;flex-wrap:wrap;gap:8px}.aviso .ab button{width:auto;flex:1 1 180px;margin-top:4px}
+section>.card.aviso>h2::before{content:none;counter-increment:none}
 </style>
 </head>
 <body class="simple">
@@ -377,6 +386,7 @@ nav button[aria-selected=true]::after{content:"";position:absolute;left:50%;bott
  <div class="hero" id="hero"><canvas id="sky" aria-hidden="true"></canvas>
   <div class="in"><div class="q s">¿Qué cae del cielo hoy en Copiapó?</div><div class="q x">Deposición de partículas compatibles con microplásticos · máximo entre puntos</div>
    <div class="lv"><i id="hDot"></i><span id="hLv"></span></div><div class="sub" id="hSub"></div><div class="chips" id="hChips"></div><button type="button" class="shareb" id="shareB"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13"/></svg><span>Compartir el estado de hoy</span></button></div><span class="dishlbl" aria-hidden="true">Placa Petri · 24 h</span></div>
+ <div class="card aviso" id="iAviso" hidden></div>
  <div class="card" id="iColor"><h2>Qué significa este color</h2>
   <div class="scale"><i style="background:var(--l1)"></i><i style="background:var(--l2)"></i><i style="background:var(--l3)"></i><i style="background:var(--l4)"></i><span class="pin" id="pin"></span></div>
   <div class="sl"><span>Poco</span><span>Mucho</span></div>
@@ -1602,8 +1612,28 @@ window.MA_onDB=db=>{try{db.collection("colegios").orderBy("t","desc").limit(200)
 window.MA_onAPI=async()=>{schLoadApi();try{campApply((await api("/api/campaigns")).data)}catch(e){}};
 window.MA_adm=admExtra;
 
+// ---------- Aviso de campañas (Inicio) ----------
+// Para cambiar el anuncio, edita AVISO:
+//   modo: "invita" (antes de una campaña), "resultados" (cuando ya hay datos) u "off" (oculto).
+//   fecha: texto libre, por ejemplo "Marzo 2027" o "Por confirmar".
+const AVISO={modo:"invita",campana:"Campaña 2",fecha:{es:"Por confirmar",en:"To be confirmed"}};
+function renderAviso(){const el=$("iAviso");if(!el)return;const m=AVISO.modo;el.hidden=m!="invita"&&m!="resultados";if(el.hidden)return;
+ const inv=m=="invita",cp=esc(AVISO.campana||""),f=AVISO.fecha?esc(B(AVISO.fecha.es,AVISO.fecha.en)):"";
+ el.classList.toggle("res2",!inv);
+ el.innerHTML=inv
+  ?`<span class="ak">${svgI("micro",16)}${B("Próxima campaña","Next campaign")}</span><h2>${B(`Se viene la ${cp}`,`${cp.replace("Campaña","Campaign")} is coming`)}</h2>
+   <p>${B("Volveremos a dejar placas Petri durante 24 h en los seis sectores del colegio, esta vez con réplicas y blancos para confirmar lo que vimos en el piloto.","We will again leave Petri dishes for 24 h in the six school sectors, this time with replicates and blanks to confirm what we saw in the pilot.")}</p>
+   ${f?`<span class="af">${B("Fecha","Date")}: ${f}</span>`:""}
+   <p>${B("¿Tu colegio quiere saber qué cae en su aire? Súmate a la red: el método usa materiales de laboratorio escolar.","Does your school want to know what falls from its sky? Join the network: the method uses school lab materials.")}</p>
+   <div class="ab"><button type="button" id="avGo">${B("Sumar mi colegio","Add my school")}</button><button type="button" class="sec" id="avHow">${B("Cómo se hace","How it works")}</button></div>`
+  :`<span class="ak">${svgI("check",16)}${B("Nuevos resultados","New results")}</span><h2>${B(`Ya están los datos de la ${cp}`,`${cp.replace("Campaña","Campaign")} data is in`)}</h2>
+   <p>${B("Los conteos de los seis sectores del colegio ahora son datos reales, con réplicas y blancos. Mira dónde cayó más.","Counts for the six school sectors are now real data, with replicates and blanks. See where the most fell.")}</p>
+   <div class="ab"><button type="button" id="avGo">${B("Ver en el mapa","See it on the map")}</button></div>`;
+ $("avGo").onclick=inv?()=>{go("proyecto");setTimeout(()=>{const r=$("pRed");if(r){const d=r.querySelector("details");if(d)d.open=true;r.scrollIntoView({behavior:RM?"auto":"smooth",block:"start"})}},60)}:()=>go("mapa");
+ const h=$("avHow");if(h)h.onclick=()=>go("aprende")}
+
 // ---------- arranque ----------
-renderJuegos();renderCasa();renderCtl();renderSpec();renderRec();renderKit();
+renderJuegos();renderCasa();renderCtl();renderSpec();renderRec();renderKit();renderAviso();
 schApply(ld("ma_sch",[]));{const c=ld("ma_camp",null);if(c&&c.camps)campApply(c)}
 
 // ---------- v18: bandas de cielo ----------
