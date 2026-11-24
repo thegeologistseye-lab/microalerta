@@ -1,0 +1,970 @@
+[
+{
+"file": "av-dante.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "dante",
+"txt": "Dante Pavez Bugueño"
+},
+{
+"file": "av-cristobal.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "cristobal",
+"txt": "Cristóbal Vergaray Fúnez"
+},
+{
+"file": "av-miriam.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "miriam",
+"txt": "Miriam Arriagada Laferte"
+},
+{
+"file": "m01-uda-raman.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Universidad de Atacama: preparando la prueba de microscopía confocal Raman."
+},
+{
+"file": "m02-camara.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Desarrollo de la primera versión de la cámara confinada."
+},
+{
+"file": "m03-expo-jurado.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Expociencias Chile: explicando el proyecto al jurado."
+},
+{
+"file": "m04-expo-equipo.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Expociencias Chile: el equipo reunido en el stand."
+},
+{
+"file": "m05-expo-premio.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Expociencias Chile: después de la premiación del 3.er lugar."
+},
+{
+"file": "m06-centro-padres.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Reconocimiento del Centro de Padres del Colegio Cervantino."
+},
+{
+"file": "m07-creadores-grupo.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Los Creadores: el equipo en el evento final."
+},
+{
+"file": "m08-creadores-escenario.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Los Creadores: reconocimiento como ganadores regionales de Atacama."
+},
+{
+"file": "m09-icare.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "ICARE: evento que conecta proyectos con líderes y empresarios de Chile."
+},
+{
+"file": "m10-moneda.jpg",
+"cat": "equipo",
+"sector": "equipo",
+"who": "momento",
+"txt": "Gira a Santiago: visita al Palacio de La Moneda."
+},
+{
+"file": "mu-placas.jpg",
+"cat": "muestreo",
+"sector": "muestreo",
+"kind": "image",
+"txt": "Preparando las placas Petri en el laboratorio del colegio."
+},
+{
+"file": "placas-muestreo.jpg",
+"cat": "placas",
+"txt": "Placas del muestreo",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-1.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 1",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-2.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 2",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-3.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 3",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-4.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 4",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-5.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 5",
+"sector": "bano"
+},
+{
+"file": "bano2-lugol-6.jpg",
+"cat": "lugol",
+"txt": "Baño 2 · Lugol · figura 6",
+"sector": "bano"
+},
+{
+"file": "bano-azul-1.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 1",
+"sector": "bano"
+},
+{
+"file": "bano-azul-2.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 2",
+"sector": "bano"
+},
+{
+"file": "bano-azul-3.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 3",
+"sector": "bano"
+},
+{
+"file": "bano-azul-4.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 4",
+"sector": "bano"
+},
+{
+"file": "bano-azul-5.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 5",
+"sector": "bano"
+},
+{
+"file": "bano-azul-6.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 6",
+"sector": "bano"
+},
+{
+"file": "bano-azul-7.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 7",
+"sector": "bano"
+},
+{
+"file": "bano-azul-8.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 8",
+"sector": "bano"
+},
+{
+"file": "bano-azul-9.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 9",
+"sector": "bano"
+},
+{
+"file": "bano-azul-10.jpg",
+"cat": "azul",
+"txt": "Baño · azul de metileno · figura 10",
+"sector": "bano"
+},
+{
+"file": "ref-ref-1.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Partículas transparentes de polietileno."
+},
+{
+"file": "ref-ref-2.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Detalle de partículas de polietileno con referencia milimétrica."
+},
+{
+"file": "ref-ref-3.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Vista lateral de partículas de polietileno."
+},
+{
+"file": "ref-ref-4.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Partículas verdes correspondientes a nylon."
+},
+{
+"file": "ref-ref-5.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Detalle de fragmentos de nylon."
+},
+{
+"file": "ref-ref-6.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Fragmentos de nylon observados con referencia milimétrica."
+},
+{
+"file": "ref-ref-7.jpg",
+"sector": "ref",
+"cat": "ref",
+"txt": "Distribución de partículas de nylon en placa Petri."
+},
+{
+"file": "entrada-sin-1.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 1"
+},
+{
+"file": "entrada-sin-2.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 2"
+},
+{
+"file": "entrada-sin-3.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 3"
+},
+{
+"file": "entrada-sin-4.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 4"
+},
+{
+"file": "entrada-sin-5.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 5"
+},
+{
+"file": "entrada-sin-6.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 6"
+},
+{
+"file": "entrada-sin-7.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 7"
+},
+{
+"file": "entrada-sin-8.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 8"
+},
+{
+"file": "entrada-sin-9.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 9"
+},
+{
+"file": "entrada-sin-10.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 10"
+},
+{
+"file": "entrada-sin-11.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 11"
+},
+{
+"file": "entrada-sin-12.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 12"
+},
+{
+"file": "entrada-sin-13.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 13"
+},
+{
+"file": "entrada-sin-14.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 14"
+},
+{
+"file": "entrada-sin-15.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 15"
+},
+{
+"file": "entrada-sin-16.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 16"
+},
+{
+"file": "entrada-sin-17.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 17"
+},
+{
+"file": "entrada-sin-18.jpg",
+"sector": "entrada",
+"cat": "sin",
+"txt": "Entrada · sin teñir · foto 18"
+},
+{
+"file": "comedor-azul-1.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 1"
+},
+{
+"file": "comedor-azul-2.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 2"
+},
+{
+"file": "comedor-azul-3.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 3"
+},
+{
+"file": "comedor-azul-4.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 4"
+},
+{
+"file": "comedor-azul-5.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 5"
+},
+{
+"file": "comedor-azul-6.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 6"
+},
+{
+"file": "comedor-azul-7.jpg",
+"sector": "comedor",
+"cat": "azul",
+"txt": "Comedor · azul de metileno · foto 7"
+},
+{
+"file": "comedor-lugol-1.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 1"
+},
+{
+"file": "comedor-lugol-2.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 2"
+},
+{
+"file": "comedor-lugol-3.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 3"
+},
+{
+"file": "comedor-lugol-4.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 4"
+},
+{
+"file": "comedor-lugol-5.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 5"
+},
+{
+"file": "comedor-lugol-6.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 6"
+},
+{
+"file": "comedor-lugol-7.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 7"
+},
+{
+"file": "comedor-lugol-8.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 8"
+},
+{
+"file": "comedor-lugol-9.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 9"
+},
+{
+"file": "comedor-lugol-10.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 10"
+},
+{
+"file": "comedor-lugol-11.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 11"
+},
+{
+"file": "comedor-lugol-12.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 12"
+},
+{
+"file": "comedor-lugol-13.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 13"
+},
+{
+"file": "comedor-lugol-14.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 14"
+},
+{
+"file": "comedor-lugol-15.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 15"
+},
+{
+"file": "comedor-lugol-16.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 16"
+},
+{
+"file": "comedor-lugol-17.jpg",
+"sector": "comedor",
+"cat": "lugol",
+"txt": "Comedor · Lugol · foto 17"
+},
+{
+"file": "calle-azul-1.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 1"
+},
+{
+"file": "calle-azul-2.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 2"
+},
+{
+"file": "calle-azul-3.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 3"
+},
+{
+"file": "calle-azul-4.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 4"
+},
+{
+"file": "calle-azul-5.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 5"
+},
+{
+"file": "calle-azul-6.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 6"
+},
+{
+"file": "calle-azul-7.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 7"
+},
+{
+"file": "calle-azul-8.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 8"
+},
+{
+"file": "calle-azul-9.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 9"
+},
+{
+"file": "calle-azul-10.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 10"
+},
+{
+"file": "calle-azul-11.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 11"
+},
+{
+"file": "calle-azul-12.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 12"
+},
+{
+"file": "calle-azul-13.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 13"
+},
+{
+"file": "calle-azul-14.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 14"
+},
+{
+"file": "calle-azul-15.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 15"
+},
+{
+"file": "calle-azul-16.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 16"
+},
+{
+"file": "calle-azul-17.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 17"
+},
+{
+"file": "calle-azul-18.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 18"
+},
+{
+"file": "calle-azul-19.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 19"
+},
+{
+"file": "calle-azul-20.jpg",
+"sector": "calle",
+"cat": "azul",
+"txt": "Calle · azul de metileno · foto 20"
+},
+{
+"file": "calle-lugol-1.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 1"
+},
+{
+"file": "calle-lugol-2.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 2"
+},
+{
+"file": "calle-lugol-3.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 3"
+},
+{
+"file": "calle-lugol-4.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 4"
+},
+{
+"file": "calle-lugol-5.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 5"
+},
+{
+"file": "calle-lugol-6.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 6"
+},
+{
+"file": "calle-lugol-7.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 7"
+},
+{
+"file": "calle-lugol-8.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 8"
+},
+{
+"file": "calle-lugol-9.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 9"
+},
+{
+"file": "calle-lugol-10.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 10"
+},
+{
+"file": "calle-lugol-11.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 11"
+},
+{
+"file": "calle-lugol-12.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 12"
+},
+{
+"file": "calle-lugol-13.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 13"
+},
+{
+"file": "calle-lugol-14.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 14"
+},
+{
+"file": "calle-lugol-15.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 15"
+},
+{
+"file": "calle-lugol-16.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 16"
+},
+{
+"file": "calle-lugol-17.jpg",
+"sector": "calle",
+"cat": "lugol",
+"txt": "Calle · Lugol · foto 17"
+},
+{
+"file": "bano-lugol-1.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 1"
+},
+{
+"file": "bano-lugol-2.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 2"
+},
+{
+"file": "bano-lugol-3.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 3"
+},
+{
+"file": "bano-lugol-4.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 4"
+},
+{
+"file": "bano-lugol-5.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 5"
+},
+{
+"file": "bano-lugol-6.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 6"
+},
+{
+"file": "bano-lugol-7.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 7"
+},
+{
+"file": "bano-lugol-8.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 8"
+},
+{
+"file": "bano-lugol-9.jpg",
+"sector": "bano",
+"cat": "lugol",
+"txt": "Baño 1 · Lugol · foto 9"
+},
+{
+"file": "laba-azul-1.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 1"
+},
+{
+"file": "laba-azul-2.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 2"
+},
+{
+"file": "laba-azul-3.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 3"
+},
+{
+"file": "laba-azul-4.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 4"
+},
+{
+"file": "laba-azul-5.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 5"
+},
+{
+"file": "laba-azul-6.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 6"
+},
+{
+"file": "laba-azul-7.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 7"
+},
+{
+"file": "laba-azul-8.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 8"
+},
+{
+"file": "laba-azul-9.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 9"
+},
+{
+"file": "laba-azul-10.jpg",
+"sector": "laba",
+"cat": "azul",
+"txt": "Laboratorio · placa abierta · azul de metileno · foto 10"
+},
+{
+"file": "laba-lugol-1.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 1"
+},
+{
+"file": "laba-lugol-2.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 2"
+},
+{
+"file": "laba-lugol-3.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 3"
+},
+{
+"file": "laba-lugol-4.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 4"
+},
+{
+"file": "laba-lugol-5.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 5"
+},
+{
+"file": "laba-lugol-6.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 6"
+},
+{
+"file": "laba-lugol-7.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 7"
+},
+{
+"file": "laba-lugol-8.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 8"
+},
+{
+"file": "laba-lugol-9.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 9"
+},
+{
+"file": "laba-lugol-10.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 10"
+},
+{
+"file": "laba-lugol-11.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 11"
+},
+{
+"file": "laba-lugol-12.jpg",
+"sector": "laba",
+"cat": "lugol",
+"txt": "Laboratorio · placa abierta · Lugol · foto 12"
+},
+{
+"file": "labc-azul-1.jpg",
+"sector": "labc",
+"cat": "azul",
+"txt": "Laboratorio · placa cerrada · azul de metileno · foto 1"
+},
+{
+"file": "labc-azul-2.jpg",
+"sector": "labc",
+"cat": "azul",
+"txt": "Laboratorio · placa cerrada · azul de metileno · foto 2"
+},
+{
+"file": "labc-azul-3.jpg",
+"sector": "labc",
+"cat": "azul",
+"txt": "Laboratorio · placa cerrada · azul de metileno · foto 3"
+},
+{
+"file": "labc-azul-4.jpg",
+"sector": "labc",
+"cat": "azul",
+"txt": "Laboratorio · placa cerrada · azul de metileno · foto 4"
+},
+{
+"file": "labc-azul-5.jpg",
+"sector": "labc",
+"cat": "azul",
+"txt": "Laboratorio · placa cerrada · azul de metileno · foto 5"
+},
+{
+"file": "labc-lugol-1.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 1"
+},
+{
+"file": "labc-lugol-2.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 2"
+},
+{
+"file": "labc-lugol-3.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 3"
+},
+{
+"file": "labc-lugol-4.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 4"
+},
+{
+"file": "labc-lugol-5.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 5"
+},
+{
+"file": "labc-lugol-6.jpg",
+"sector": "labc",
+"cat": "lugol",
+"txt": "Laboratorio · placa cerrada · Lugol · foto 6"
+}
+]
