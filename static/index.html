@@ -1076,7 +1076,7 @@ function renderCom(){const c=COM;$("aqH").textContent=B0(`Calidad del aire · ${
 $("comSel").innerHTML=COMS.map(([n])=>`<option value="${n}" ${n==COM?"selected":""}>${n}</option>`).join("");
 $("comSel").onchange=e=>{COM=e.target.value;try{localStorage.setItem("ma_com",COM)}catch(x){}loadCom(COM==="Copiapó"?null:null)};
 // compartir
-$("shareB").onclick=async()=>{const mx=Math.max(...SEC.map(p=>p.c)),k=lv(mx),top=SEC.find(p=>p.c==mx),a=AQV?AQ[Math.max(aqLv(AQV.p25,"p25"),aqLv(AQV.p10,"p10"))]:null,url=(API?location.origin:ART_URL)+(LANG=="en"?"?lang=en":"");
+$("shareB").onclick=async()=>{const mx=Math.max(...SEC.map(p=>p.c)),k=lv(mx),top=SEC.find(p=>p.c==mx),a=AQV?AQ[Math.max(aqLv(AQV.p25,"p25"),aqLv(AQV.p10,"p10"))]:null,url=WEB_URL.replace(/\/$/,"")+(LANG=="en"?"?lang=en":"");
  const txt=B0(`MicroAlerta Copiapó hoy: deposición nivel ${L[k].n.toLowerCase()} (${fC(mx)} en ${top.n}).${a?` Calidad del aire en ${COM}: ${a.n.toLowerCase()} (MP2,5 ${Math.round(AQV.p25)} µg/m³).`:""}`,`MicroAlerta Copiapó today: deposition level ${T(L[k].n).toLowerCase()} (${fC(mx)} at ${T(top.n)}).${a?` Air quality in ${COM}: ${T(a.n).toLowerCase()} (PM2.5 ${Math.round(AQV.p25)} µg/m³).`:""}`);
  const b=$("shareB"),sp=b.querySelector("span"),old=sp.textContent;
  try{if(navigator.share){await navigator.share({title:"MicroAlerta Copiapó",text:txt,url});return}}catch(e){if(e&&e.name=="AbortError")return}
@@ -1203,7 +1203,8 @@ const QR=(()=>{
 })();
 
 const ART_URL="https://claude.ai/artifact/JVgZ3GYh1QJF7B4fdR54Sf";
-function qrBase(){return ART_URL}
+const WEB_URL="https://microalerta-mkm0.onrender.com/";
+function qrBase(){return WEB_URL}
 function renderQR(){const inp=$("qUrl");if(!inp.dataset.touched)inp.value=qrBase();let u=inp.value.trim();
  try{const x=new URL(u);x.searchParams.set("lang",$("qLang").value);u=x.toString()}catch(e){$("qrOut").innerHTML="";$("qrTxt").textContent=T("Escribe un enlace válido que empiece con https://");return}
  try{$("qrOut").innerHTML=QR.svg(u,6);$("qrTxt").textContent=u}catch(e){$("qrOut").innerHTML="";$("qrTxt").textContent=T("El enlace es demasiado largo para el QR.")}
