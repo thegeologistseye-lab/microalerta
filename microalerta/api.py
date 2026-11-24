@@ -381,9 +381,22 @@ def guardar_campanas(u):
             if k not in PUNTOS or not isinstance(v, list) or len(v) != len(camps):
                 raise ValueError
             limpio[k] = [max(0.0, float(x)) for x in v]
+        # Opcional: desviación estándar y número de réplicas por sector y campaña
+        extra = {}
+        for campo, conv in (("sd", float), ("n", int)):
+            m = d.get(campo)
+            if m is None:
+                continue
+            if not isinstance(m, dict):
+                raise ValueError
+            extra[campo] = {}
+            for k, v in m.items():
+                if k not in limpio or not isinstance(v, list) or len(v) != len(camps):
+                    raise ValueError
+                extra[campo][k] = [None if x is None else max(0, conv(x)) for x in v]
     except (ValueError, TypeError):
         return err("Datos de campaña inválidos.")
-    valor = {"camps": camps, "sec": limpio, "t": int(time.time() * 1000)}
+    valor = {"camps": camps, "sec": limpio, **extra, "t": int(time.time() * 1000)}
     db.execute("INSERT INTO ajustes (clave, valor) VALUES ('campanas', ?) "
                "ON CONFLICT(clave) DO UPDATE SET valor=excluded.valor, actualizado=datetime('now')",
                (json.dumps(valor, ensure_ascii=False),))

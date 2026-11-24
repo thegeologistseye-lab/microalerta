@@ -137,3 +137,15 @@ def test_campanas(client):
     assert client.get("/api/campaigns").get_json()["data"]["sec"]["Comedor"] == [1.2, 0.8]
     client.post("/api/campaigns", json={"camps": []})
     assert client.get("/api/campaigns").get_json()["data"] is None
+
+
+def test_campanas_con_replicas(client):
+    login(client)
+    d = {"camps": ["C1", "C2"], "sec": {"Baño": [5.5, 5.7]},
+         "sd": {"Baño": [None, 0.5]}, "n": {"Baño": [1, 3]}}
+    assert client.post("/api/campaigns", json=d).status_code == 200
+    data = client.get("/api/campaigns").get_json()["data"]
+    assert data["sd"]["Baño"] == [None, 0.5] and data["n"]["Baño"] == [1, 3]
+    # sd con largo distinto o para un sector sin promedio: se rechaza
+    assert client.post("/api/campaigns", json={**d, "sd": {"Baño": [0.5]}}).status_code == 400
+    assert client.post("/api/campaigns", json={**d, "n": {"Calle": [1, 3]}}).status_code == 400
