@@ -474,10 +474,12 @@ table.rub td{vertical-align:top;font-size:.85rem}
   <div class="row"><div><label for="f_v">Volumen (mL)</label><input id="f_v" type="number" min="1" value="40"></div><div><label for="f_a">Área de la placa (cm²)</label><input id="f_a" type="number" min="1" step="0.1" value="63.6"></div></div>
   <p class="note">La placa Ø 90 mm tiene unos 63,6 cm². Cuenta el total de la placa o del filtro, no solo un campo del microscopio.</p>
  <h3>2 · Microscopio y tinción</h3>
-  <div class="row"><div><label for="f_st">Tinción</label><select id="f_st"><option value="lugol">Lugol</option><option value="azul_metileno">Azul de metileno</option><option value="ninguna">Sin tinción</option></select></div><div><label for="f_x">Aumento</label><select id="f_x"><option>100×</option><option>200×</option><option selected>400×</option></select></div></div>
+  <div class="row"><div><label for="f_st">Tinción</label><select id="f_st"><option value="rojo_nilo" selected>Rojo de Nilo (fluorescencia)</option><option value="lugol">Lugol</option><option value="azul_metileno">Azul de metileno</option><option value="ninguna">Sin tinción</option></select></div><div><label for="f_x">Aumento</label><select id="f_x"><option selected>40×</option><option>100×</option><option>200×</option><option>400×</option></select></div></div>
   <div class="row"><div><label for="m_f">Fibras</label><input id="m_f" type="number" min="0" value="0"></div><div><label for="m_g">Fragmentos</label><input id="m_g" type="number" min="0" value="0"></div></div>
   <div class="row"><div><label for="m_l">Films (láminas)</label><input id="m_l" type="number" min="0" value="0"></div><div><label for="m_m">Minerales / polvo</label><input id="m_m" type="number" min="0" value="0"></div></div>
   <div class="row"><div><label for="m_u">Partículas dudosas</label><input id="m_u" type="number" min="0" value="0"></div><div><label for="f_c">Partículas en el control</label><input id="f_c" type="number" min="0" value="0"></div></div>
+  <div class="row"><div><label for="f_fr">Parte del disco analizada (%)</label><input id="f_fr" type="number" min="1" max="100" step="0.1" value="100"></div><div><label for="f_js">Resultado de MicroAlerta Scan</label><input id="f_js" type="file" accept=".json,application/json"></div></div>
+  <p class="note">Con el celular se cuenta cerca del 40 % del disco: escribe ese porcentaje y la app extiende el conteo al disco completo. Con la cámara y los motores es 100 %. El archivo resultado.json del programa llena el formulario solo.</p>
   <label for="f_id">Grado de identificación</label><select id="f_id"><option value="observado">observado</option><option value="compatible (óptica)" selected>compatible (óptica)</option><option value="confirmado (Raman/FTIR)">confirmado (Raman/FTIR)</option></select>
   <p class="note" id="tot"></p>
   <label for="f_ph">Foto del campo o placa</label><input id="f_ph" type="file" accept="image/*" capture="environment"><img id="prev" alt="Vista previa de la foto" style="max-width:100%;border-radius:10px;margin-top:8px" hidden>
@@ -485,6 +487,7 @@ table.rub td{vertical-align:top;font-size:.85rem}
  <h3>3 · Clima de la exposición</h3><div class="tiles" id="wx2"></div>
   <button id="calc">Calcular y guardar reporte</button><div class="res" id="out" hidden></div>
   <p class="note x">TDC = máx(0, Nₘ − N꜀) / (A × t), en PCM/(m²·día). Los reportes quedan «pendientes de validación» hasta que un administrador los apruebe.</p></div>
+ <div class="card" id="rCal"></div>
  <div class="card" id="rList"><h2>Reportes de la comunidad</h2><p class="mute" id="rSrc"></p><div class="tiles" id="rStats"></div><div id="mine"></div></div>
  <div class="card" id="rAdmin" hidden><h2>Panel de administración</h2>
   <p class="s">Aquí el equipo revisa cada reporte antes de que aparezca en el mapa.</p><p class="x">Cola de validación: se revisa foto, control y coherencia del conteo; aprobar publica el dato, rechazar exige un comentario para quien lo subió.</p>
@@ -503,7 +506,8 @@ table.rub td{vertical-align:top;font-size:.85rem}
  <div class="card" id="aJuegos"></div>
  <div class="card"><h2>Pon a prueba lo que sabes</h2><p class="mute">Cuatro preguntas sobre microplásticos en el aire.</p><div id="quiz"></div></div>
  <div class="card"><h2>Protocolo de captación</h2>
-  <ol class="steps"><li><b>Prepara.</b> Sanitiza una placa Petri Ø 90 mm con alcohol 70°, agrega 40 mL de agua destilada y congélala.</li><li><b>Expón.</b> Déjala destapada 24 h, en altura y lejos de fuentes. Al lado, una placa igual pero cerrada: es el control.</li><li><b>Recupera.</b> Ciérrala, rotúlala y transpórtala sin guantes plásticos. Filtra el agua.</li><li><b>Observa.</b> Con microscopio (100–400×) cuenta fibras, fragmentos, films y minerales. Lugol y azul de metileno solo ayudan a descartar.</li><li><b>Reporta.</b> Sube tus conteos y fotos en Reportar.</li></ol>
+  <ol class="steps"><li><b>Prepara.</b> Sanitiza una placa Petri Ø 90 mm con alcohol 70°, agrega 40 mL de agua destilada y congélala.</li><li><b>Expón.</b> Déjala destapada 24 h, en altura y lejos de fuentes. Al lado, una placa igual pero cerrada: es el control.</li><li><b>Recupera.</b> Ciérrala, rotúlala y llévala al laboratorio sin abrirla.</li><li><b>Procesa.</b> El agua oxigenada destruye la materia orgánica. Después, la muestra se filtra con una jeringa por un disco de papel y se tiñe con Rojo de Nilo.</li><li><b>Observa.</b> Con luz azul y un filtro naranjo, los plásticos brillan. El microscopio fotografía el disco en una cuadrícula y MicroAlerta Scan cuenta lo que brilla, desde 20 µm.</li><li><b>Reporta.</b> Sube tus conteos y fotos en Reportar.</li></ol>
+  <p class="note">En el piloto se usaron Lugol y azul de metileno para descartar material orgánico. El agua oxigenada al 30 % y la acetona del tinte las maneja solo un adulto, con lentes y guantes de nitrilo.</p>
   <p class="note">Solo la espectroscopía Raman o FTIR confirma de qué material es una partícula.</p>
   <details><summary>Primeros pasos (tu avance se guarda aquí)</summary><div id="steps"></div></details></div>
  <div class="card"><h2>Simulador</h2><p class="mute">Mueve los controles y mira cómo cambian las recomendaciones del semáforo.</p>
@@ -660,6 +664,13 @@ let READY=false;
 const LANG=(()=>{try{const q=new URLSearchParams(location.search).get("lang");if(q=="en"||q=="es"){localStorage.setItem("ma_lang",q);return q}return localStorage.getItem("ma_lang")||"es"}catch(e){return "es"}})();
 const LOC=LANG=="en"?"en-US":"es-CL";document.documentElement.lang=LANG;
 const EN={
+"Rojo de Nilo (fluorescencia)":"Nile Red (fluorescence)","Parte del disco analizada (%)":"Part of the disc analysed (%)","Resultado de MicroAlerta Scan":"MicroAlerta Scan result",
+"Con el celular se cuenta cerca del 40 % del disco: escribe ese porcentaje y la app extiende el conteo al disco completo. Con la cámara y los motores es 100 %. El archivo resultado.json del programa llena el formulario solo.":"With a phone about 40% of the disc is counted: enter that percentage and the app extends the count to the whole disc. With the camera and motors it is 100%. The program's resultado.json file fills in the form for you.",
+"Ciérrala, rotúlala y llévala al laboratorio sin abrirla.":"Close it, label it and take it to the lab without opening it.","Procesa.":"Process.",
+"El agua oxigenada destruye la materia orgánica. Después, la muestra se filtra con una jeringa por un disco de papel y se tiñe con Rojo de Nilo.":"Hydrogen peroxide destroys organic matter. Then the sample is filtered with a syringe through a paper disc and stained with Nile Red.",
+"Con luz azul y un filtro naranjo, los plásticos brillan. El microscopio fotografía el disco en una cuadrícula y MicroAlerta Scan cuenta lo que brilla, desde 20 µm.":"Under blue light with an orange filter, plastics glow. The microscope photographs the disc in a grid and MicroAlerta Scan counts what glows, from 20 µm.",
+"En el piloto se usaron Lugol y azul de metileno para descartar material orgánico. El agua oxigenada al 30 % y la acetona del tinte las maneja solo un adulto, con lentes y guantes de nitrilo.":"The pilot used Lugol and methylene blue to rule out organic matter. The 30% hydrogen peroxide and the stain's acetone are handled only by an adult, with glasses and nitrile gloves.",
+"Procesa, tiñe y fotografía el disco":"Process, stain and photograph the disc",
 "Atacama · datos que se vuelven conciencia":"Atacama · data that becomes awareness","Los conteos de partículas son datos de ejemplo":"Particle counts are sample data","Nivel de explicación":"Level of explanation","Simple":"Simple","Experto":"Expert","Modo presentación":"Presentation mode","Ajustes y unidades":"Settings and units","Ajustes y cuenta":"Settings and account","Cambiar idioma":"Change language",
 "¿Qué cae del cielo hoy en Copiapó?":"What is falling from the sky in Copiapó today?","Deposición de partículas compatibles con microplásticos · máximo entre puntos":"Deposition of microplastic-compatible particles · maximum across sites",
 "Qué significa este color":"What this colour means","Poco":"Little","Mucho":"A lot",
@@ -1055,15 +1066,54 @@ let qi=0,qs=0;function quiz(){const z=$("quiz");if(qi>=QZ.length){z.innerHTML=`<
 quiz();
 // ---------- Reportar ----------
 const iso=d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,16);$("f_i1").value=iso(new Date());$("f_i0").value=iso(new Date(Date.now()-864e5));
-const g=i=>+$(i).value||0,tot=()=>{const n=g("m_f")+g("m_g")+g("m_l");$("tot").innerHTML=`Total compatible (fibras + fragmentos + films): <b>${n}</b> · ${fC(n/(g("f_v")||40))}`};
-["m_f","m_g","m_l","f_v"].forEach(i=>$(i).oninput=tot);tot();
+const g=i=>+$(i).value||0,frD=()=>Math.min(100,Math.max(1,g("f_fr")||100))/100,tot=()=>{const n=g("m_f")+g("m_g")+g("m_l"),f=frD(),nE=n/f;const en=LANG=="en";$("tot").innerHTML=`${en?"Total compatible (fibres + fragments + films)":"Total compatible (fibras + fragmentos + films)"}: <b>${n}</b>${f<1?` · ${en?"on the whole disc":"en el disco completo"}: <b>${n2(nE,1)}</b>`:""} · ${fC(nE/(g("f_v")||40))}`};
+["m_f","m_g","m_l","f_v","f_fr"].forEach(i=>$(i).oninput=tot);tot();
+// resultado.json de MicroAlerta Scan → formulario
+$("f_js").onchange=async e=>{const f=e.target.files[0];if(!f)return;const o=$("out");o.hidden=false;
+ try{const r=JSON.parse(await f.text()),c=r.conteo||{},m=r.muestra||{},pf=c.por_forma||{},fr=c.fraccion_filtro_analizada;
+  if(!c.pcm)throw 0;
+  $("m_f").value=pf.fibra||0;$("m_g").value=pf.fragmento||0;$("m_l").value=pf.pelicula||0;$("m_m").value=0;$("m_u").value=0;
+  $("f_fr").value=c.filtro_completo||!fr||fr>=.995?100:+(fr*100).toFixed(1);
+  if(m.tincion=="rojo_de_nilo"||c.deteccion=="fluorescencia")$("f_st").value="rojo_nilo";$("f_x").value="40×";
+  if(m.area_captador_m2>0)$("f_a").value=+(m.area_captador_m2*1e4).toFixed(1);
+  if(m.tiempo_dias>0)$("f_i0").value=iso(new Date(new Date($("f_i1").value)-m.tiempo_dias*864e5));
+  if(m.muestra_id)$("f_p").value=String(m.muestra_id).slice(0,20);
+  $("f_t").value=/control|blanco/.test(m.tipo||"")?"Blanco (control cerrado)":"Muestra de campo";
+  $("f_id").value=c.base_conteo=="pcm_modelo"?"compatible (óptica)":"observado";
+  $("f_o").value=`MicroAlerta Scan · ${c.base_conteo||""} · ≥ ${c.limite_minimo_um??20} µm`.slice(0,300);tot();
+  o.textContent=B(`Listo: ${c.pcm.n_contado} partículas contadas en ${n2((fr||1)*100,0)} % del disco. Escribe el conteo del control (sale de su propio archivo) y revisa las fechas.`,`Done: ${c.pcm.n_contado} particles counted on ${n2((fr||1)*100,0)} % of the disc. Enter the control count (from its own file) and check the dates.`)}
+ catch(_){o.textContent=B("Ese archivo no es un resultado.json de MicroAlerta Scan.","That file is not a MicroAlerta Scan resultado.json.")}};
 $("f_ph").onchange=e=>{const f=e.target.files[0];if(f){$("prev").src=URL.createObjectURL(f);$("prev").hidden=false}};
 $("calc").onclick=()=>{const o=$("out");o.hidden=false;
- const n=g("m_f")+g("m_g")+g("m_l"),c=g("f_c"),v=g("f_v"),a=g("f_a")/1e4,t=(new Date($("f_i1").value)-new Date($("f_i0").value))/864e5;
+ const n=g("m_f")+g("m_g")+g("m_l"),c=g("f_c"),v=g("f_v"),a=g("f_a")/1e4,t=(new Date($("f_i1").value)-new Date($("f_i0").value))/864e5,fr=frD(),nE=n/fr,cE=c/fr;
  if(!(v>0&&a>0)||!(t>0)){o.textContent="Revisa los datos: el fin de la exposición debe ser posterior al inicio, y volumen y área deben ser mayores que cero.";return}
- const conc=n/v,tdc=Math.max(0,n-c)/(a*t),i=lv(conc),u=g("m_u");
- o.innerHTML=`${dot(cv(L[i].c))}<b>${L[i].n}</b>: ${fC(conc)}${u?` (hasta ${fC((n+u)/v)} si las dudosas fueran compatibles)`:""}<br><span class="x">TDC: ${Math.round(tdc).toLocaleString(LOC)} PCM/(m²·día) · exposición ${n2(t*24,1)} h</span>${c>n?"<br>El control supera a la muestra: revisa el procedimiento.":""}<ul>${recs(i)}</ul>`;
- addReport({punto:ALL[+$("f_s").value].n,tipo:$("f_t").value,conc,tdc,n,ctrl:c,grado:$("f_id").value,obs:$("f_o").value.slice(0,300),placa:$("f_p").value.slice(0,20),volumen_ml:v,area_cm2:g("f_a"),horas:+(t*24).toFixed(2)})};
+ const conc=nE/v,tdc=Math.max(0,nE-cE)/(a*t),i=lv(conc),u=g("m_u");
+ o.innerHTML=`${dot(cv(L[i].c))}<b>${L[i].n}</b>: ${fC(conc)}${u?` (hasta ${fC((n+u)/fr/v)} si las dudosas fueran compatibles)`:""}<br><span class="x">TDC: ${Math.round(tdc).toLocaleString(LOC)} PCM/(m²·día) · exposición ${n2(t*24,1)} h</span>${c>n?"<br>El control supera a la muestra: revisa el procedimiento.":""}<ul>${recs(i)}</ul>`;
+ addReport({punto:ALL[+$("f_s").value].n,tipo:$("f_t").value,conc,tdc,n,ctrl:c,grado:$("f_id").value,obs:$("f_o").value.slice(0,300),placa:$("f_p").value.slice(0,20),volumen_ml:v,area_cm2:g("f_a"),horas:+(t*24).toFixed(2),fraccion_pct:+(fr*100).toFixed(1)})};
+// ---------- ¿Confianza reforzada? (misma fórmula que el protocolo, MicroAlerta Scan y /api/quality) ----------
+function calidad(m,c){// m, c: [{n: contadas, f: fracción del disco}]
+ const media=a=>a.reduce((s,x)=>s+x,0)/a.length,nm=m.map(x=>x.n/x.f),nc=c.map(x=>x.n/x.f);if(!nm.length||!nc.length)return null;
+ const mc=media(nc),sc=nc.length>1?Math.sqrt(nc.reduce((s,x)=>s+(x-mc)**2,0)/(nc.length-1)):null,
+  sp=Math.sqrt(Math.max(media(c.map(x=>x.n)),1))/media(c.map(x=>x.f)),de=sc==null?null:Math.max(sc,sp),um=de==null?null:mc+3*de,mm=media(nm);
+ return {mm,mc,sc,sp,de,um,nr:nm.length,nk:nc.length,ok:nm.length>=3&&nc.length>=3&&um!=null&&mm>um+1e-9*Math.max(1,Math.abs(um))}}
+function renderCal(){const c=$("rCal");if(!c)return;
+ c.innerHTML=`<h2>${B("¿Confianza reforzada?","Reinforced confidence?")}</h2><p class="s">${B("Escribe lo contado en cada réplica y en cada control de un mismo punto. La app aplica la misma fórmula del protocolo y del programa.","Enter what was counted on each replicate and each control of one site. The app applies the same formula as the protocol and the program.")}</p>
+ <label for="q_m">${B("Réplicas: partículas contadas, separadas por coma","Replicates: particles counted, comma-separated")}</label><input id="q_m" inputmode="numeric" placeholder="12, 15, 9">
+ <label for="q_c">${B("Controles cerrados: partículas contadas","Closed controls: particles counted")}</label><input id="q_c" inputmode="numeric" placeholder="0, 1, 0">
+ <label for="q_f">${B("Parte del disco analizada (%)","Part of the disc analysed (%)")}</label><input id="q_f" type="number" min="1" max="100" value="100">
+ <button type="button" class="sec" id="q_go">${B("Evaluar","Evaluate")}</button><div class="res" id="q_out" hidden></div>
+ <details><summary>${B("La fórmula exacta","The exact formula")}</summary><ul class="x">
+ <li>${B("N = partículas contadas ÷ parte del disco analizada.","N = particles counted ÷ part of the disc analysed.")}</li>
+ <li>${B("DE = la mayor entre la desviación estándar de los N de los controles (con n − 1) y el piso de Poisson: √(máx(media contada en los controles; 1)) ÷ parte media analizada en los controles.","SD = the larger of the controls' N standard deviation (with n − 1) and the Poisson floor: √(max(mean count in the controls; 1)) ÷ mean part analysed in the controls.")}</li>
+ <li>${B("Confianza reforzada si hay 3 o más réplicas, 3 o más controles y la media de N de las réplicas supera la media de N de los controles + 3 × DE. Si no, exploratorio.","Reinforced confidence if there are 3 or more replicates, 3 or more controls and the replicates' mean N exceeds the controls' mean N + 3 × SD. Otherwise, exploratory.")}</li></ul>
+ <p class="note">${B("Con los controles en 0 y el disco completo, DE = 1: la media de las réplicas debe pasar de 3 (3 justas no alcanzan). Este criterio evalúa la calidad del dato, no la identidad química.","With controls at 0 and the whole disc, SD = 1: the replicates' mean must exceed 3 (exactly 3 is not enough). This criterion judges data quality, not chemical identity.")}</p></details>`;
+ $("q_go").onclick=()=>{const o=$("q_out"),f=Math.min(100,Math.max(1,+$("q_f").value||100))/100,
+   L=id=>$(id).value.split(/[\s;,]+/).filter(Boolean).map(Number).filter(x=>x>=0&&isFinite(x)).map(n=>({n,f})),
+   r=calidad(L("q_m"),L("q_c")),F=x=>x==null?"—":x.toLocaleString(LOC,{maximumFractionDigits:1});o.hidden=false;
+  if(!r){o.textContent=B("Escribe al menos una réplica y un control.","Enter at least one replicate and one control.");return}
+  const falta=[r.nr<3?B(`faltan ${3-r.nr} réplica(s)`,`${3-r.nr} more replicate(s) needed`):"",r.nk<3?B(`faltan ${3-r.nk} control(es)`,`${3-r.nk} more control(s) needed`):""].filter(Boolean).join(" · ");
+  o.innerHTML=`<b>${r.ok?B("Confianza reforzada","Reinforced confidence"):B("Exploratorio","Exploratory")}</b><br><span class="x">${B("Media de las réplicas","Replicates' mean")}: ${F(r.mm)} · ${B("umbral","threshold")} = ${F(r.mc)} + 3 × ${F(r.de)} = ${F(r.um)} (${B("en el disco completo","on the whole disc")})${r.de!=null&&r.sp>r.sc?" · "+B("usa el piso de Poisson","uses the Poisson floor"):""}${falta?" · "+falta:""}</span>`}}
+// renderCal() se llama más abajo, cuando ya existe B()
 // ---------- Calidad del aire y clima ----------
 function renderAQ(){
  $("aqLeg").innerHTML="<tr><th>Nivel</th><th>MP2,5</th><th>MP10</th></tr>"+AQ.map((a,i)=>{const p=AQ[i-1],r=(lo,hi)=>hi>1e8?`≥ ${lo}`:`${lo}–${hi-1}`;return `<tr><td>${dot(cv(a.c))}${a.n}</td><td>${r(p?p.p25:0,a.p25)}</td><td>${r(p?p.p10:0,a.p10)}</td></tr>`}).join("");
@@ -1139,7 +1189,7 @@ document.addEventListener("click",e=>{if(!e.target.closest(".mwrap"))hmClose()})
 $("gear").onclick=()=>{hmClose();$("set").showModal()};$("setOk").onclick=()=>$("set").close();
 document.querySelectorAll(".seg[data-k]").forEach(gr=>gr.onclick=e=>{if(e.target.dataset.v){S[gr.dataset.k]=e.target.dataset.v;save("ma_set",S);render();tot()}});
 ["s_c","s_h","s_w"].forEach(i=>$(i).oninput=render);
-$("steps").innerHTML=["Revisa el protocolo","Prepara la placa con 40 mL de agua destilada congelada","Expón la placa 24 h junto a un control cerrado","Observa al microscopio y cuenta las partículas","Registra tu primera muestra en Reportar","Explora el resultado en el Mapa"].map((t,i)=>`<label class="chk"><input type="checkbox" data-i="${i}" ${steps.includes(i)?"checked":""}> ${t}</label>`).join("");
+$("steps").innerHTML=["Revisa el protocolo","Prepara la placa con 40 mL de agua destilada congelada","Expón la placa 24 h junto a un control cerrado","Procesa, tiñe y fotografía el disco","Registra tu primera muestra en Reportar","Explora el resultado en el Mapa"].map((t,i)=>`<label class="chk"><input type="checkbox" data-i="${i}" ${steps.includes(i)?"checked":""}> ${t}</label>`).join("");
 $("steps").onchange=e=>{const i=+e.target.dataset.i;steps=e.target.checked?[...steps,i]:steps.filter(x=>x!=i);save("ma_steps",steps)};
 
 // ---------- Reportes comunitarios + administración ----------
@@ -1432,6 +1482,7 @@ READY=true;startTranslator();render();gmLevelInit();addSpeakers();(async()=>{try
 <script>
 // ===================== v17: juegos, ciencia y comunidad =====================
 const B=(es,en)=>LANG=="en"?en:es;
+renderCal();
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
 
@@ -1588,9 +1639,11 @@ function recUpd(){const{e,u,b,d}=RV,sc=Math.round(RF.reduce((s,[k,,w])=>s+RV[k]*
 // ---------- Kit para colegios ----------
 function renderKit(){const c=$("pKit");if(!c)return;
  const M=[[B("Placas Petri de vidrio Ø 90 mm","Glass Petri dishes, 90 mm"),B("2 por punto (muestra y control)","2 per site (sample and control)")],[B("Agua destilada","Distilled water"),B("40 mL por placa","40 mL per dish")],[B("Alcohol 70°","70% alcohol"),B("para limpiar placas y mesón","to clean dishes and bench")],[B("Congelador","Freezer"),B("para congelar el agua de las placas","to freeze the water in the dishes")],[B("Papel filtro y embudo","Filter paper and funnel"),B("para recuperar las partículas","to recover the particles")],[B("Microscopio escolar","School microscope"),B("100× a 400×, con portaobjetos","100× to 400×, with slides")],[B("Lugol y azul de metileno","Lugol and methylene blue"),B("opcional, ayudan a descartar material orgánico","optional, help rule out organic matter")],[B("Plumón, cinta y planilla","Marker, tape and log sheet"),B("para rotular y anotar todo","to label and record everything")],[B("Delantal de algodón","Cotton lab coat"),B("evita que tu ropa suelte fibras en la placa","stops your clothes shedding fibres into the dish")]];
+ const M2=[[B("Agua oxigenada al 30 %","30% hydrogen peroxide"),B("digiere la materia orgánica; corrosiva, en vaso dentro de agua fría y sin pasar de 50 °C","digests organic matter; corrosive, beaker in cold water and never above 50 °C")],[B("Rojo de Nilo y acetona","Nile Red and acetone"),B("solución madre de 1 mg/mL; de trabajo, 10 µg/mL en agua. La acetona es inflamable y nunca se junta con el agua oxigenada","1 mg/mL stock; 10 µg/mL working solution in water. Acetone is flammable and never goes with the peroxide")],[B("Portafiltro de 25 mm y dos jeringas","25 mm filter holder and two syringes"),B("una para las muestras y otra solo para el tinte","one for samples and one only for the stain")],[B("Papel filtro en discos de 25 mm","Filter paper cut into 25 mm discs"),B("cortados con sacabocados","cut with a hole punch")],[B("Luz azul de 450–470 nm y filtro naranjo","450–470 nm blue light and orange filter"),B("con lentes naranjos para mirar por el ocular","with orange glasses to look through the eyepiece")],[B("Guantes de nitrilo y lentes de seguridad","Nitrile gloves and safety glasses"),B("guantes de un color que no aparezca en las muestras","gloves in a colour that does not appear in the samples")]];
  const D=[[B("Día 0","Day 0"),B("Limpia las placas, agrega el agua destilada, tápalas y congélalas.","Clean the dishes, add distilled water, cover and freeze them.")],[B("Día 1","Day 1"),B("En altura y lejos de fuentes: deja la placa abierta 24 h y, al lado, su control cerrado.","High up and away from sources: leave the dish open for 24 h with its closed control next to it.")],[B("Día 2","Day 2"),B("Cierra, rotula y lleva al laboratorio. Filtra y cuenta fibras, fragmentos, láminas y minerales.","Close, label and take to the lab. Filter and count fibres, fragments, films and minerals.")],[B("Después","Afterwards"),B("Sube tu reporte con fotos en «Reportar» y registra tu colegio en la red.","Upload your report with photos in “Report” and register your school in the network.")]];
  c.innerHTML=`<h2>${B("Kit para tu colegio","Kit for your school")}</h2><p class="s">${B("Todo lo necesario para que otro colegio repita nuestro muestreo con materiales de un laboratorio escolar.","Everything another school needs to repeat our sampling with school-lab materials.")}</p><p class="x">${B("Mismo protocolo que el piloto, para que los datos de distintos colegios sean comparables entre sí.","Same protocol as the pilot, so data from different schools can be compared with each other.")}</p>
  <h3>${B("Materiales","Materials")}</h3><table><tbody>${M.map(([a,b])=>`<tr><td><b>${a}</b></td><td class="mute">${b}</td></tr>`).join("")}</tbody></table>
+ <h3>${B("Método actual del equipo: Rojo de Nilo","The team's current method: Nile Red")}</h3><p class="x">${B("Desde la Campaña 2 el equipo digiere la muestra con agua oxigenada, la filtra con jeringa y la tiñe con Rojo de Nilo: los plásticos brillan con luz azul. Necesita laboratorio y un adulto a cargo; el kit básico sigue sirviendo para comparar con el piloto.","From Campaign 2 the team digests the sample with hydrogen peroxide, filters it with a syringe and stains it with Nile Red: plastics glow under blue light. It needs a lab and an adult in charge; the basic kit still works for comparing with the pilot.")}</p><table><tbody>${M2.map(([a,b])=>`<tr><td><b>${a}</b></td><td class="mute">${b}</td></tr>`).join("")}</tbody></table>
  <h3>${B("Calendario","Timeline")}</h3><ul class="tl">${D.map(([a,b])=>`<li><b>${a}</b>${b}</li>`).join("")}</ul>
  <details><summary>${B("Planilla de registro (columnas)","Log sheet (columns)")}</summary><p class="mute">${B("Una fila por placa:","One row per dish:")}</p><p><code>campana, sector, particulas_muestra, particulas_control, volumen_ml</code></p><p class="note">${B("Es el mismo formato que el equipo usa para cargar datos reales en la app.","It is the same format the team uses to load real data into the app.")}</p></details>`}
 
@@ -1934,6 +1987,8 @@ function dataDl(k){let n,t,mime="text/csv";
  else{n="microalerta_metodologia.txt";mime="text/plain";t=[B("MicroAlerta Copiapó · Metodología","MicroAlerta Copiapó · Methods"),"",
   B("Captación: placas Petri de vidrio Ø 90 mm con 40 mL de agua destilada congelada, expuestas 24 h en las techumbres de seis sectores del Colegio Cervantino (Copiapó, Chile), cada sector con una placa control cerrada.","Sampling: Ø 90 mm glass Petri dishes with 40 mL of frozen distilled water, exposed for 24 h on the rooftops of six sites at Colegio Cervantino (Copiapó, Chile), each site with a closed control dish."),
   B("Análisis: filtrado y conteo al microscopio (100–400×), con clasificación morfológica (fibra, fragmento, film, mineral, orgánica). Lugol y azul de metileno ayudan a descartar material orgánico.","Analysis: filtering and counting under the microscope (100–400×), with morphological classification (fibre, fragment, film, mineral, organic). Lugol and methylene blue help rule out organic matter."),
+  B("Desde la Campaña 2: digestión con agua oxigenada al 30 %, filtrado con jeringa por un disco de papel de 25 mm, tinción con Rojo de Nilo (10 µg/mL, 30 min) y fotografía con luz azul y filtro naranjo en cuadrícula; conteo con MicroAlerta Scan desde 20 µm.","From Campaign 2: digestion with 30% hydrogen peroxide, syringe filtration through a 25 mm paper disc, Nile Red staining (10 µg/mL, 30 min) and gridded photography under blue light with an orange filter; counting with MicroAlerta Scan from 20 µm."),
+  B("Calidad del dato: confianza reforzada con 3 o más réplicas, 3 o más controles y media de las réplicas > media de los controles + 3·DE, con DE = máx(desviación de los controles con n − 1, √máx(media contada en los controles, 1) ÷ parte del disco analizada); si no, exploratorio.","Data quality: reinforced confidence with 3 or more replicates, 3 or more controls and replicates' mean > controls' mean + 3·SD, with SD = max(controls' SD with n − 1, √max(mean control count, 1) ÷ part of the disc analysed); otherwise exploratory."),
   B("Cálculo: part./mL = (partículas de la muestra − partículas del control) / volumen. Las réplicas se promedian y se informa su desviación estándar.","Calculation: part./mL = (sample particles − control particles) / volume. Replicates are averaged and their standard deviation is reported."),
   B("Confirmación química: microscopía confocal Raman (532 nm) en una muestra, Universidad de Atacama, octubre de 2026.","Chemical confirmation: confocal Raman microscopy (532 nm) on one sample, University of Atacama, October 2026."),
   B("Clima y calidad del aire: Open-Meteo (modelo CAMS para MP2,5, MP10 y polvo).","Weather and air quality: Open-Meteo (CAMS model for PM2.5, PM10 and dust)."),"",
@@ -2010,7 +2065,7 @@ function renderGuia(){const c=$("pGuia");if(!c)return;
  <h3>${B("Secuencia","Sequence")}</h3>${S.map(([t,l])=>`<p style="margin:10px 0 2px"><b>${t}</b></p><ul>${l.map(x=>`<li>${x}</li>`).join("")}</ul>`).join("")}
  <h3>${B("Preguntas para discutir","Discussion questions")}</h3><ol>${Q.map(q=>`<li>${q}</li>`).join("")}</ol>
  <h3>${B("Evaluación","Assessment")}</h3><div class="scroll"><table class="rub"><tr><th>${B("Criterio","Criterion")}</th><th>${B("Logrado","Achieved")}</th><th>${B("En desarrollo","Developing")}</th><th>${B("Inicial","Beginning")}</th></tr>${RB2.map(r=>`<tr>${r.map((x,i)=>i?`<td>${x}</td>`:`<td><b>${x}</b></td>`).join("")}</tr>`).join("")}</table></div>
- <h3>${B("Seguridad","Safety")}</h3><ul><li>${B("Subir a las techumbres solo con autorización y supervisión de un adulto.","Go up to rooftops only with permission and adult supervision.")}</li><li>${B("Usar alcohol 70° lejos de llamas y con ventilación.","Use 70% alcohol away from flames and with ventilation.")}</li><li>${B("El Lugol y el azul de metileno manchan: usar delantal de algodón y lavarse las manos.","Lugol and methylene blue stain: wear a cotton coat and wash your hands.")}</li></ul>
+ <h3>${B("Seguridad","Safety")}</h3><ul><li>${B("Subir a las techumbres solo con autorización y supervisión de un adulto.","Go up to rooftops only with permission and adult supervision.")}</li><li>${B("Usar alcohol 70° lejos de llamas y con ventilación.","Use 70% alcohol away from flames and with ventilation.")}</li><li>${B("El Lugol y el azul de metileno manchan: usar delantal de algodón y lavarse las manos.","Lugol and methylene blue stain: wear a cotton coat and wash your hands.")}</li><li>${B("Con el método de Rojo de Nilo: el agua oxigenada al 30 % es corrosiva y la acetona es inflamable. Las maneja un adulto, con lentes y guantes de nitrilo, y nunca se mezclan ni se juntan sus residuos.","With the Nile Red method: 30% hydrogen peroxide is corrosive and acetone is flammable. An adult handles them, with glasses and nitrile gloves, and they are never mixed and their waste is never combined.")}</li></ul>
  <button type="button" class="sec" id="guiaP">${B("Imprimir la guía","Print the guide")}</button>`;
  $("guiaP").onclick=()=>printSel(c)}
 

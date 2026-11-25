@@ -1,6 +1,7 @@
 """API REST de MicroAlerta: sesión, reportes, validación, galería y exportación."""
 import io
 import json
+import math
 import os
 import secrets
 import time
@@ -87,6 +88,8 @@ def num(v, defecto=None, minimo=0.0):
         if defecto is None:
             raise ValueError("Número inválido")
         return defecto
+    if not math.isfinite(x):
+        raise ValueError("Número inválido")
     if x < minimo:
         raise ValueError("Los valores no pueden ser negativos")
     return x
@@ -173,6 +176,16 @@ def crear_reporte(u):
         vol = num(f.get("volumen_ml"), VOLUMEN_ML, 0.1)
         area = num(f.get("area_cm2"), AREA_PLACA_CM2, 0.1)
         horas = num(f.get("horas"), HORAS_EXPOSICION, 0.1)
+        # Parte del disco que se contó (modo celular: unos 40 %). Se extiende al disco completo,
+        # igual que MicroAlerta Scan, y se deja anotado lo contado de verdad.
+        pct = num(f.get("fraccion_pct"), 100.0, 1.0)
+        if pct > 100:
+            raise ValueError("La parte del disco analizada no puede pasar de 100 %.")
+        nota = ""
+        if pct < 100:
+            nota = f"Contadas {n} (control {ctrl}) en {pct:g} % del disco; extendido al disco completo. "
+            n = round(science.extrapolar(n, pct / 100))
+            ctrl = round(science.extrapolar(ctrl, pct / 100))
         conc = science.concentracion(n, vol)
         t = science.tdc(n, ctrl, area, horas)
         foto = guardar_foto(request.files["foto"], "reportes") if request.files.get("foto") else None
@@ -186,10 +199,26 @@ def crear_reporte(u):
         """INSERT INTO reportes (autor_id, punto, placa, tipo, grado, particulas, control, volumen_ml,
            area_cm2, horas, conc, tdc, nivel, obs, foto, clima) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (u["id"], punto, f.get("placa", "")[:20], tipo, grado, n, ctrl, vol, area, horas, conc, t,
-         science.semaforo(conc), f.get("obs", "")[:300], foto, weather.como_texto(clima)))
+         science.semaforo(conc), (nota + f.get("obs", ""))[:300], foto, weather.como_texto(clima)))
     db.commit()
     r = db.execute("SELECT * FROM reportes WHERE id=?", (cur.lastrowid,)).fetchone()
     return jsonify({"report": a_json(r, u)}), 201
+
+
+@bp.post("/quality")
+def calidad():
+    """Criterio de confianza reforzada (misma fórmula que el protocolo y MicroAlerta Scan).
+    JSON: {"muestras": [{"n": 12, "fraccion": 1}, …], "controles": [{"n": 0, "fraccion": 1}, …]}"""
+    d = request.get_json(silent=True) or {}
+    try:
+        lista = lambda k: [(float(x["n"]), float(x.get("fraccion", 1))) for x in (d.get(k) or [])]
+        m, c = lista("muestras"), lista("controles")
+        if len(m) > 50 or len(c) > 50:
+            raise ValueError("Como máximo 50 réplicas y 50 controles.")
+        # evaluar_calidad rechaza conteos negativos, infinitos o NaN y fracciones fuera de (0, 1]
+        return jsonify(science.evaluar_calidad(m, c))
+    except (ValueError, TypeError, KeyError, AttributeError) as e:
+        return err(str(e) if isinstance(e, ValueError) else "Datos inválidos.")
 
 
 @bp.post("/reports/<int:rid>/review")

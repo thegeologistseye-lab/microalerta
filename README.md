@@ -14,6 +14,15 @@ Colegio Cervantino, Copiapó.
 - **Reportes con trazabilidad**: cada uno guarda punto, placa, tipo, conteo, control,
   volumen, área, horas, part./mL, TDC, nivel, foto, observaciones, el clima de
   Open-Meteo en ese momento y quién lo aprobó o rechazó.
+- **Método con Rojo de Nilo**: el formulario acepta la parte del disco que se contó (con el celular, cerca
+  del 40 %) y extiende el conteo al disco completo, como MicroAlerta Scan; también se puede cargar el
+  `resultado.json` del programa y el formulario se llena solo.
+- **Criterio de calidad** (`/api/quality` y la tarjeta «¿Confianza reforzada?»): la misma fórmula del
+  protocolo y de MicroAlerta Scan. N = contadas ÷ parte del disco analizada; DE = máx(desviación de los
+  controles con n − 1, √máx(media contada en los controles, 1) ÷ parte media analizada); «confianza
+  reforzada» si hay ≥ 3 réplicas, ≥ 3 controles y media de N de las réplicas > media de N de los
+  controles + 3·DE; si no, «exploratorio». Está en `microalerta/science.py`, en el JavaScript de la app y
+  en el programa: si cambia en uno, hay que cambiarla en los tres.
 - **Validación**: nada aparece en el mapa hasta que un admin lo aprueba; rechazar
   exige un motivo.
 - **Galería del microscopio** por categoría (fibras, fragmentos, films, orgánicas, Raman).
