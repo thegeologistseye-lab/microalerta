@@ -149,3 +149,39 @@ def test_campanas_con_replicas(client):
     # sd con largo distinto o para un sector sin promedio: se rechaza
     assert client.post("/api/campaigns", json={**d, "sd": {"Baño": [0.5]}}).status_code == 400
     assert client.post("/api/campaigns", json={**d, "n": {"Calle": [1, 3]}}).status_code == 400
+
+
+def test_criterio_de_calidad_igual_al_protocolo():
+    """Misma fórmula que MicroAlerta Scan y la sección 5 del protocolo, con sus casos de borde."""
+    ceros = [(0, 1)] * 3
+    assert science.evaluar_calidad([(3, 1)] * 3, ceros)["calidad"] == "exploratorio"      # 3 justas no alcanzan
+    r = science.evaluar_calidad([(3, 1), (4, 1), (3, 1)], ceros)
+    assert r["calidad"] == "confianza reforzada" and r["de_usada"] == 1.0
+    r = science.evaluar_calidad([(30, 1)] * 3, [(2, 1), (6, 1), (10, 1)])
+    assert r["de_usada"] == 4.0 and r["umbral"] == 18.0                                  # manda s_c (n − 1)
+    # celular, 40 % del disco: el piso es 2,5 en el disco completo; siguen siendo más de 3 contadas
+    assert science.evaluar_calidad([(3, 0.4)] * 3, [(0, 0.4)] * 3)["calidad"] == "exploratorio"
+    assert science.evaluar_calidad([(4, 0.4)] * 3, [(0, 0.4)] * 3)["calidad"] == "confianza reforzada"
+    # menos de 3 réplicas o controles: siempre exploratorio
+    assert science.evaluar_calidad([(50, 1)] * 2, ceros)["calidad"] == "exploratorio"
+    assert science.evaluar_calidad([(50, 1)] * 3, [(0, 1)])["calidad"] == "exploratorio"
+
+
+def test_api_calidad(client):
+    r = client.post("/api/quality", json={"muestras": [{"n": 4, "fraccion": 0.4}] * 3,
+                                          "controles": [{"n": 0, "fraccion": 0.4}] * 3})
+    assert r.status_code == 200 and r.json["calidad"] == "confianza reforzada" and r.json["formula"]
+    assert client.post("/api/quality", json={"muestras": [], "controles": []}).status_code == 400
+    assert client.post("/api/quality", json={"muestras": [{"n": -1}], "controles": [{"n": 0}]}).status_code == 400
+
+
+def test_reporte_con_parte_del_disco(client):
+    login(client)
+    r = client.post("/api/reports", data={"punto": "Baño", "tipo": "Muestra de campo", "n": "8", "ctrl": "1",
+                                          "fraccion_pct": "40"}, content_type="multipart/form-data")
+    assert r.status_code == 201
+    rep = r.json["report"]
+    assert rep["n"] == 20 and rep["ctrl"] == 2                    # 8 ÷ 0,4 y 1 ÷ 0,4 redondeado
+    assert "40 % del disco" in rep["obs"]
+    assert client.post("/api/reports", data={"punto": "Baño", "n": "8", "fraccion_pct": "140"},
+                       content_type="multipart/form-data").status_code == 400

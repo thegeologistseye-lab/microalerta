@@ -48,6 +48,10 @@ def libro(reportes) -> bytes:
         "MicroAlerta · Colegio Cervantino, Copiapó",
         "part./mL: partículas compatibles con microplásticos por mL de agua de la placa.",
         "TDC = máx(0, muestra − control) / (área × días), en PCM/(m²·día).",
+        "Si se contó solo una parte del disco, el conteo se extiende al disco completo (contadas ÷ fracción).",
+        "Confianza reforzada: ≥ 3 réplicas, ≥ 3 controles y media de las réplicas > media de los controles + 3·DE, "
+        "con DE = máx(desviación de los controles con n − 1, √máx(media contada en los controles, 1) ÷ fracción). "
+        "Si no, exploratorio.",
         "Clasificación óptica presuntiva: solo Raman o FTIR confirman el polímero.",
         "Semáforo exploratorio: no es una escala sanitaria ni mide concentración en el aire.",
     ]:
