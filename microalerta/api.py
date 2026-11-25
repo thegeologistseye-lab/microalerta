@@ -1,6 +1,7 @@
 """API REST de MicroAlerta: sesión, reportes, validación, galería y exportación."""
 import io
 import json
+import math
 import os
 import secrets
 import time
@@ -87,6 +88,8 @@ def num(v, defecto=None, minimo=0.0):
         if defecto is None:
             raise ValueError("Número inválido")
         return defecto
+    if not math.isfinite(x):
+        raise ValueError("Número inválido")
     if x < minimo:
         raise ValueError("Los valores no pueden ser negativos")
     return x
@@ -208,10 +211,11 @@ def calidad():
     JSON: {"muestras": [{"n": 12, "fraccion": 1}, …], "controles": [{"n": 0, "fraccion": 1}, …]}"""
     d = request.get_json(silent=True) or {}
     try:
-        lista = lambda k: [(float(x["n"]), float(x.get("fraccion", 1))) for x in (d.get(k) or [])][:50]
+        lista = lambda k: [(float(x["n"]), float(x.get("fraccion", 1))) for x in (d.get(k) or [])]
         m, c = lista("muestras"), lista("controles")
-        if any(n < 0 for n, _ in m + c):
-            raise ValueError("Los conteos no pueden ser negativos.")
+        if len(m) > 50 or len(c) > 50:
+            raise ValueError("Como máximo 50 réplicas y 50 controles.")
+        # evaluar_calidad rechaza conteos negativos, infinitos o NaN y fracciones fuera de (0, 1]
         return jsonify(science.evaluar_calidad(m, c))
     except (ValueError, TypeError, KeyError, AttributeError) as e:
         return err(str(e) if isinstance(e, ValueError) else "Datos inválidos.")

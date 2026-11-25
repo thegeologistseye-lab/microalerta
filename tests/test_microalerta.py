@@ -185,3 +185,30 @@ def test_reporte_con_parte_del_disco(client):
     assert "40 % del disco" in rep["obs"]
     assert client.post("/api/reports", data={"punto": "Baño", "n": "8", "fraccion_pct": "140"},
                        content_type="multipart/form-data").status_code == 400
+
+
+@pytest.mark.parametrize("n, f", [(float("inf"), 1), (float("nan"), 1), (1e400, 1), (5, float("nan")), (5, 0), (5, 1.5)])
+def test_calidad_rechaza_valores_no_finitos(n, f):
+    """Un conteo infinito ganaba «confianza reforzada» (revisión del PR #1)."""
+    with pytest.raises(ValueError):
+        science.evaluar_calidad([(n, f)] * 3, [(0, 1)] * 3)
+    with pytest.raises(ValueError):
+        science.evaluar_calidad([(5, 1)] * 3, [(n, f)] * 3)
+
+
+def test_api_calidad_rechaza_infinito_y_listas_largas(client):
+    # JSON con 1e400 se lee como infinito en Python
+    r = client.post("/api/quality", data='{"muestras":[{"n":1e400},{"n":1e400},{"n":1e400}],'
+                    '"controles":[{"n":0},{"n":0},{"n":0}]}', content_type="application/json")
+    assert r.status_code == 400
+    r = client.post("/api/quality", json={"muestras": [{"n": 5}] * 51, "controles": [{"n": 0}] * 3})
+    assert r.status_code == 400 and "50" in r.json["error"]
+
+
+def test_reporte_rechaza_conteo_infinito(client):
+    login(client)
+    r = client.post("/api/reports", data={"punto": "Baño", "n": "inf"}, content_type="multipart/form-data")
+    assert r.status_code == 400
+    r = client.post("/api/reports", data={"punto": "Baño", "n": "5", "fraccion_pct": "nan"},
+                    content_type="multipart/form-data")
+    assert r.status_code == 400

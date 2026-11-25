@@ -50,7 +50,9 @@ def advertencias(muestra: float, control: float) -> list:
 
 def extrapolar(contadas: float, fraccion: float) -> float:
     """Conteo del disco completo a partir de lo contado en una fracción del disco (0 < fracción ≤ 1)."""
-    if not 0 < fraccion <= 1:
+    if not math.isfinite(contadas) or contadas < 0:
+        raise ValueError("Cada conteo debe ser un número finito, cero o mayor")
+    if not 0 < fraccion <= 1:          # también rechaza NaN: toda comparación con NaN es falsa
         raise ValueError("La fracción del disco analizada debe estar entre 1 % y 100 %")
     return contadas / fraccion
 
