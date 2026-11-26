@@ -1,0 +1,24 @@
+{
+  "muestra_id": "CALLE-2026-12-07-R1",
+  "tipo": "muestra",
+  "sitio": "Calle frente al Colegio Cervantino",
+  "fecha_instalacion": "2026-12-07T10:00",
+  "fecha_retiro": "2026-12-08T10:00",
+  "tiempo_dias": 1.0,
+  "area_captador_m2": 0.00636,
+  "filtro_material": "papel cualitativo grado 200",
+  "filtro_diametro_mm": 21.0,
+  "filtro_completo": false,
+  "tincion": "rojo_de_nilo",
+  "deteccion": "fluorescencia",
+  "limite_minimo_um": 20,
+  "parametros_campana": "../parametros_campana.json",
+  "imagenes": [
+    "../fotos/CALLE-R1/"
+  ],
+  "multimodal": {
+    "sufijo_blanca": "_W",
+    "sufijo_fluo": "_F"
+  },
+  "_nota": "La escala sale de captura.json (junto a campos.csv) y el umbral de fluorescencia de parametros_campana.json (comando umbral con los blancos). Con fotos de celular, agregue \"calibracion\": {\"um_por_px\": ...} con la escala del micrómetro."
+}

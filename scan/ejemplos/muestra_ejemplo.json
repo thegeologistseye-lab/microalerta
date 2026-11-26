@@ -1,0 +1,19 @@
+{
+  "muestra_id": "CALLE-2026-05-19-R1",
+  "tipo": "muestra",
+  "sitio": "Calle frente al Colegio Cervantino",
+  "fecha_instalacion": "2026-05-19T10:00",
+  "fecha_retiro": "2026-05-20T10:00",
+  "tiempo_dias": 1.0,
+  "area_captador_m2": 0.00636,
+  "filtro_material": "papel",
+  "filtro_diametro_mm": null,
+  "filtro_completo": false,
+  "tincion": "lugol",
+  "calibracion": {
+    "um_por_px": null,
+    "diametro_campo_um": 4500
+  },
+  "imagenes": ["fotos_calle/"],
+  "multimodal": {"sufijo_blanca": "_W", "sufijo_pol": "_P", "sufijo_fluo": "_F"}
+}

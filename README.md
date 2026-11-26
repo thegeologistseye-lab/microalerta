@@ -6,6 +6,9 @@ Colegio Cervantino, Copiapó.
 
 ## Qué incluye
 
+- **MicroAlerta Scan** (`scan/`): el programa en Python que recibe las fotos del disco teñido con Rojo de
+  Nilo, arma la cuadrícula, cuenta las partículas que brillan y calcula la TDC con el mismo criterio de
+  calidad que la app. Tiene su propio `README.md`, `requirements.txt` y pruebas (`cd scan && python -m pytest -q`).
 - **La app** (`static/index.html`): la misma que se ve en Claude. Al abrirse desde este
   servidor detecta la API y activa cuentas, reportes reales, validación y galería.
   El clima y la calidad del aire (MP2,5 y MP10) llegan en vivo desde Open-Meteo.
@@ -57,7 +60,8 @@ python app.py --crear-usuario
 ## Pruebas
 
 ```bash
-python -m pytest -q tests
+python -m pytest -q tests                                   # app
+cd scan && pip install -r requirements.txt && python -m pytest -q   # MicroAlerta Scan
 ```
 
 ## Variables de entorno
@@ -83,7 +87,13 @@ microalerta/
   weather.py        clima de Open-Meteo para cada reporte
   excel.py          exportación
 static/             la app (index.html), manifest, service worker e íconos
-tests/              pruebas
+tests/              pruebas de la app
+scan/               MicroAlerta Scan: programa en Python que cuenta las partículas (ver scan/README.md)
+LICENSE             licencia MIT
 ```
 
 Ver `DESPLIEGUE_RENDER.md` para publicarla en internet.
+
+## Licencia
+
+Código bajo licencia MIT (ver `LICENSE`), incluido MicroAlerta Scan.
