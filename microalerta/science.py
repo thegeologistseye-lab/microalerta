@@ -81,7 +81,9 @@ def evaluar_calidad(muestras: list, controles: list) -> dict:
     mm = media(nm)
     sd_m = math.sqrt(sum((x - mm) ** 2 for x in nm) / (len(nm) - 1)) if len(nm) > 1 else None
     cv_m = 100 * sd_m / mm if sd_m is not None and mm > 0 else None
-    return {"de_replicas": sd_m, "cv_replicas_pct": cv_m,
+    # si la media no supera el fondo + 3·DE, el punto se informa como «bajo el límite de detección»
+    bajo_ld = umbral is not None and not reforzada and not (mm > umbral + 1e-9 * max(1.0, abs(umbral)))
+    return {"de_replicas": sd_m, "cv_replicas_pct": cv_m, "bajo_limite_deteccion": bajo_ld,
             "calidad": "confianza reforzada" if reforzada else "exploratorio", "formula": FORMULA_CRITERIO,
             "replicas": len(nm), "controles": len(nc), "media_muestra": media(nm), "media_control": mc,
             "de_control": sd_c, "de_minima_poisson": de_poisson, "de_usada": de, "umbral": umbral}
