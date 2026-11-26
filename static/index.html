@@ -1096,7 +1096,7 @@ function calidad(m,c){// m, c: [{n: contadas, f: fracción del disco}]
  const mc=media(nc),sc=nc.length>1?Math.sqrt(nc.reduce((s,x)=>s+(x-mc)**2,0)/(nc.length-1)):null,
   sp=Math.sqrt(Math.max(media(c.map(x=>x.n)),1))/media(c.map(x=>x.f)),de=sc==null?null:Math.max(sc,sp),um=de==null?null:mc+3*de,mm=media(nm),
   sm=nm.length>1?Math.sqrt(nm.reduce((s,x)=>s+(x-mm)**2,0)/(nm.length-1)):null,cvm=sm!=null&&mm>0?100*sm/mm:null;
- return {mm,mc,sc,sp,de,um,sm,cvm,nr:nm.length,nk:nc.length,ok:nm.length>=3&&nc.length>=3&&um!=null&&mm>um+1e-9*Math.max(1,Math.abs(um))}}
+ return {mm,mc,sc,sp,de,um,sm,cvm,bl:um!=null&&!(mm>um+1e-9*Math.max(1,Math.abs(um))),nr:nm.length,nk:nc.length,ok:nm.length>=3&&nc.length>=3&&um!=null&&mm>um+1e-9*Math.max(1,Math.abs(um))}}
 function renderCal(){const c=$("rCal");if(!c)return;
  c.innerHTML=`<h2>${B("¿Confianza reforzada?","Reinforced confidence?")}</h2><p class="s">${B("Escribe lo contado en cada réplica y en cada control de un mismo punto. La app aplica la misma fórmula del protocolo y del programa.","Enter what was counted on each replicate and each control of one site. The app applies the same formula as the protocol and the program.")}</p>
  <label for="q_m">${B("Réplicas: partículas contadas, separadas por coma","Replicates: particles counted, comma-separated")}</label><input id="q_m" inputmode="numeric" placeholder="12, 15, 9">
@@ -1113,7 +1113,7 @@ function renderCal(){const c=$("rCal");if(!c)return;
    r=calidad(L("q_m"),L("q_c")),F=x=>x==null?"—":x.toLocaleString(LOC,{maximumFractionDigits:1});o.hidden=false;
   if(!r){o.textContent=B("Escribe al menos una réplica y un control.","Enter at least one replicate and one control.");return}
   const falta=[r.nr<3?B(`faltan ${3-r.nr} réplica(s)`,`${3-r.nr} more replicate(s) needed`):"",r.nk<3?B(`faltan ${3-r.nk} control(es)`,`${3-r.nk} more control(s) needed`):""].filter(Boolean).join(" · ");
-  o.innerHTML=`<b>${r.ok?B("Confianza reforzada","Reinforced confidence"):B("Exploratorio","Exploratory")}</b><br><span class="x">${B("Media de las réplicas","Replicates' mean")}: ${F(r.mm)} · ${B("umbral","threshold")} = ${F(r.mc)} + 3 × ${F(r.de)} = ${F(r.um)} (${B("en el disco completo","on the whole disc")})${r.de!=null&&r.sp>r.sc?" · "+B("usa el piso de Poisson","uses the Poisson floor"):""}${falta?" · "+falta:""}<br>${B("Variación entre réplicas","Variation between replicates")}: DE = ${F(r.sm)} · CV = ${r.cvm==null?"—":F(r.cvm)+" %"}</span>`}}
+  o.innerHTML=`<b>${r.ok?B("Confianza reforzada","Reinforced confidence"):r.bl?B("Bajo el límite de detección","Below the detection limit"):B("Exploratorio","Exploratory")}</b>${r.bl?`<br>${B("La media de las réplicas no supera el fondo de los controles + 3 DE: se informa como bajo el límite de detección, no como una deposición medida.","The replicates' mean does not exceed the controls' background + 3 SD: it is reported as below the detection limit, not as a measured deposition.")}`:""}<br><span class="x">${B("Media de las réplicas","Replicates' mean")}: ${F(r.mm)} · ${B("umbral","threshold")} = ${F(r.mc)} + 3 × ${F(r.de)} = ${F(r.um)} (${B("en el disco completo","on the whole disc")})${r.de!=null&&r.sp>r.sc?" · "+B("usa el piso de Poisson","uses the Poisson floor"):""}${falta?" · "+falta:""}<br>${B("Variación entre réplicas","Variation between replicates")}: DE = ${F(r.sm)} · CV = ${r.cvm==null?"—":F(r.cvm)+" %"}</span>`}}
 // renderCal() se llama más abajo, cuando ya existe B()
 // ---------- Calidad del aire y clima ----------
 function renderAQ(){

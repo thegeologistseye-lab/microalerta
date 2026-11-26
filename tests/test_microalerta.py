@@ -160,6 +160,9 @@ def test_criterio_de_calidad_igual_al_protocolo():
     r = science.evaluar_calidad([(30, 1)] * 3, [(2, 1), (6, 1), (10, 1)])
     assert r["de_usada"] == 4.0 and r["umbral"] == 18.0                                  # manda s_c (n − 1)
     r = science.evaluar_calidad([(10, 1), (12, 1), (14, 1)], [(0, 1)] * 3)
+    assert not r["bajo_limite_deteccion"]
+    assert science.evaluar_calidad([(3, 1)] * 3, [(0, 1)] * 3)["bajo_limite_deteccion"]          # 3 no pasa de 3
+    assert not science.evaluar_calidad([(50, 1)] * 2, [(0, 1)] * 3)["bajo_limite_deteccion"]     # sobre el fondo, pero faltan réplicas
     assert r["de_replicas"] == 2.0 and abs(r["cv_replicas_pct"] - 100 * 2 / 12) < 1e-9   # se informa aparte
     # celular, 40 % del disco: el piso es 2,5 en el disco completo; siguen siendo más de 3 contadas
     assert science.evaluar_calidad([(3, 0.4)] * 3, [(0, 0.4)] * 3)["calidad"] == "exploratorio"
